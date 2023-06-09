@@ -1,7 +1,6 @@
 import React from 'react';
-import Navbar from './Navbar';
+
 const Home = () => {
-  // Sample data for multiple display items
   const displayItems = [
     {
       id: 1,
@@ -9,6 +8,7 @@ const Home = () => {
       price: '$19.99',
       category: 'Electronics',
       rating: 4.5,
+      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
     },
     {
       id: 2,
@@ -16,6 +16,7 @@ const Home = () => {
       price: '$29.99',
       category: 'Clothing',
       rating: 3.8,
+      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
     },
     {
       id: 3,
@@ -23,24 +24,33 @@ const Home = () => {
       price: '$9.99',
       category: 'Home Decor',
       rating: 4.2,
+      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
     },
   ];
 
+  const navigateToItemDetails = (itemId) => {
+    window.location.href = `/ItemDetails/${itemId}`;
+  };
+  
+
   return (
     <div>
-      <Navbar />
-
       <div className="container mx-auto my-8">
         <h1 className="text-3xl font-bold mb-4">Welcome to JUALIN E-commerce!</h1>
 
         <div className="bg-white rounded-lg shadow-md p-6 mb-6">
           <h2 className="text-xl font-bold mb-4">Display Items</h2>
           {displayItems.map((item) => (
-            <div key={item.id} className="flex items-center mb-6">
+            <div
+              key={item.id}
+              className="flex items-center mb-6"
+              onClick={() => navigateToItemDetails(item.id)}
+              style={{ cursor: 'pointer' }}
+            >
               <div className="mr-4">
                 <img
                   className="w-32 h-32 rounded-md"
-                  src="https://example.com/sample-product-image.jpg" // Replace with your own product image URL
+                  src="https://example.com/sample-product-image.jpg"
                   alt="Product"
                 />
               </div>
@@ -50,7 +60,6 @@ const Home = () => {
                 <p className="text-gray-500">Category: {item.category}</p>
                 <div className="flex items-center mt-2">
                   <span className="text-yellow-500 flex items-center">
-                    {/* Render the rating stars based on the rating value */}
                     {Array.from({ length: 5 }).map((_, index) => (
                       <svg
                         key={index}

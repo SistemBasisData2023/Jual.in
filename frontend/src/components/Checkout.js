@@ -87,8 +87,6 @@ const Checkout = () => {
 
   return (
     <div>
-      <Navbar username="JohnDoe" email="johndoe@example.com" balance={100000} />
-
       <div className="container mx-auto my-8">
         <h1 className="text-3xl font-bold mb-4">Checkout</h1>
 

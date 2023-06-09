@@ -31,7 +31,6 @@ const AccountPage = () => {
 
   return (
     <div>
-      <Navbar username="JohnDoe" email="johndoe@example.com" balance={balance} />
 
       <div className="container mx-auto my-8">
         <h1 className="text-3xl font-bold mb-4">Account Settings</h1>
