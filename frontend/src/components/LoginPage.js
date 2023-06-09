@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import './LoginPage.css'; // Import the CSS file for styling
-import RegisterPage from './RegisterPage';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [isAdmin, setIsAdmin] = useState(false); // State for admin checkbox
 
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
@@ -14,15 +14,20 @@ const LoginPage = () => {
     setPassword(e.target.value);
   };
 
+  const handleAdminChange = (e) => {
+    setIsAdmin(e.target.checked);
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     // Handle login logic here (e.g., send data to server, validate credentials)
     console.log('Email:', email);
     console.log('Password:', password);
+    console.log('Admin:', isAdmin);
   };
 
   const handleRegister = () => {
-    window.location.href = '/RegisterPage.js';
+    window.location.href = '/Register';
   };  
 
   return (
@@ -47,6 +52,18 @@ const LoginPage = () => {
             onChange={handlePasswordChange}
             required
           />
+
+          <div className="checkbox-container">
+            <label className="checkbox-label">
+              <input
+                className="checkbox-input"
+                type="checkbox"
+                checked={isAdmin}
+                onChange={handleAdminChange}
+              />
+              Log in as admin
+            </label>
+          </div>
 
           <button className="loginbutton" type="submit">
             Sign In

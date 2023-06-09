@@ -31,7 +31,10 @@ const Home = () => {
   const navigateToItemDetails = (itemId) => {
     window.location.href = `/ItemDetails/${itemId}`;
   };
-  
+
+  const navigateToAddItem = () => {
+    window.location.href = '/AddItem';
+  };
 
   return (
     <div>
@@ -82,6 +85,24 @@ const Home = () => {
             </div>
           ))}
         </div>
+
+        <button
+          className="fixed bottom-6 right-6 bg-blue-500 hover:bg-blue-600 text-white rounded-full p-3 shadow-lg"
+          onClick={navigateToAddItem}
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-6 w-6"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+          >
+            <path
+              fillRule="evenodd"
+              d="M14 10a1 1 0 01-1 1H11v2a1 1 0 01-2 0v-2H7a1 1 0 110-2h2V7a1 1 0 112 0v2h2a1 1 0 011 1zm4-6v10a2 2 0 01-2 2H4a2 2 0 01-2-2V4a2 2 0 012-2h12a2 2 0 012 2zM4 2a4 4 0 00-4 4v10a4 4 0 004 4h12a4 4 0 004-4V6a4 4 0 00-4-4H4z"
+              clipRule="evenodd"
+            />
+          </svg>
+        </button>
       </div>
     </div>
   );
