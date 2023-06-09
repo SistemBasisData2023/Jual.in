@@ -17,4 +17,10 @@ router.put('/:id', usersController.updateUserById);
 // Delete user by ID
 router.delete('/:id', usersController.deleteUserById);
 
+// Top up user's balance
+router.patch('/:id/topup', usersController.topUpBalance);
+
+// Perform a transaction between user and admin
+router.post('/transactions', usersController.performTransaction);
+
 module.exports = router;

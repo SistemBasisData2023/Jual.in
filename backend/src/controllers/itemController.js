@@ -1,4 +1,6 @@
 const db = require('../database/db');
+const { storage } = require('../database/firebase');
+const { ref, getDownloadURL, uploadBytesResumable } = require("firebase/storage");
 
 // Get all items
 const getAllItems = async (req, res) => {
@@ -35,20 +37,18 @@ const getItemById = async (req, res) => {
   }
 };
 
-// Create a new item
+// Create a new item with image upload
 const createItem = async (req, res) => {
-  const { name, description, price, category_id } = req.body;
+  const { name, description, price, category_id, quantity } = req.body;
   console.log(req.body);
-  try {
-    // Check if user has the admin role
-    // if (req.user.role !== 'admin') {
-    //   res.status(403).json({ error: 'Unauthorized: Only admins can create items' });
-    //   return;
-    // }
 
-    const query = 'INSERT INTO Item (name, description, price, category_id) VALUES ($1, $2, $3, $4) RETURNING item_id';
-    const values = [name, description, price, category_id];
-    console.log(values);
+  try {
+    const image_url = await handleUpload(req, name); // Pass item name to handleUpload function
+
+    console.log(image_url);
+
+    const query = 'INSERT INTO Item (name, description, price, image_url, category_id, quantity) VALUES ($1, $2, $3, $4, $5, $6) RETURNING item_id';
+    const values = [name, description, price, image_url, category_id, quantity];
     const result = await db.pool.query(query, values);
 
     const newItem = {
@@ -56,7 +56,9 @@ const createItem = async (req, res) => {
       name,
       description,
       price,
+      image_url,
       category_id,
+      quantity
     };
 
     res.status(201).json(newItem);
@@ -69,17 +71,11 @@ const createItem = async (req, res) => {
 // Update item by ID
 const updateItemById = async (req, res) => {
   const { id } = req.params;
-  const { name, description, price, category_id } = req.body;
+  const { name, description, price, category_id, quantity } = req.body;
 
   try {
-    // Check if user has the admin role
-    // if (req.user.role !== 'admin') {
-    //   res.status(403).json({ error: 'Unauthorized: Only admins can update items' });
-    //   return;
-    // }
-
-    const query = 'UPDATE Item SET name = $1, description = $2, price = $3, category_id = $4 WHERE item_id = $5';
-    const values = [name, description, price, category_id, id];
+    const query = 'UPDATE Item SET name = $1, description = $2, price = $3, image_url = $4, category_id = $5, quantity = $6 WHERE item_id = $7';
+    const values = [name, description, price, image_url, category_id, quantity, id];
     await db.pool.query(query, values);
 
     res.status(200).json({ message: 'Item updated successfully' });
@@ -94,12 +90,6 @@ const deleteItemById = async (req, res) => {
   const { id } = req.params;
 
   try {
-    // Check if user has the admin role
-    // if (req.user.role !== 'admin') {
-    //   res.status(403).json({ error: 'Unauthorized: Only admins can delete items' });
-    //   return;
-    // }
-
     const query = 'DELETE FROM Item WHERE item_id = $1';
     await db.pool.query(query, [id]);
 
@@ -110,10 +100,84 @@ const deleteItemById = async (req, res) => {
   }
 };
 
+const testUpload = async (req, res) => {
+  console.log("Halo")
+  try {
+    const dateTime = giveCurrentDateTime();
+
+    const storageRef = ref(storage, `files/${req.file.originalname + "       " + dateTime}`);
+
+    // Create file metadata including the content type
+    const metadata = {
+      contentType: req.file.mimetype,
+    };
+
+    // Upload the file in the bucket storage
+    const snapshot = await uploadBytesResumable(storageRef, req.file.buffer, metadata);
+    //by using uploadBytesResumable we can control the progress of uploading like pause, resume, cancel
+
+    // Grab the public url
+    const downloadURL = await getDownloadURL(snapshot.ref);
+
+    console.log('File successfully uploaded.');
+    return res.send({
+      message: 'file uploaded to firebase storage',
+      name: req.file.originalname,
+      type: req.file.mimetype,
+      downloadURL: downloadURL
+    });
+  } catch (error) {
+    return res.status(400).send(error.message);
+  }
+};
+
+const handleUpload = async (req, itemName) => {
+  try {
+    const dateTime = giveCurrentDateTime();
+
+    const fileExtension = req.file.originalname.split('.').pop().toLowerCase();
+    const validExtensions = ['jpeg', 'jpg', 'png', 'gif'];
+
+    if (!validExtensions.includes(fileExtension)) {
+      throw new Error('Invalid image file format. Only JPEG, PNG, JPG, and GIF are allowed.');
+    }
+
+    const imageName = `${itemName}_${dateTime}.${fileExtension}`;
+
+    const storageRef = ref(storage, `files/${imageName}`);
+
+    // Create file metadata including the content type
+    const metadata = {
+      contentType: req.file.mimetype,
+    };
+
+    // Upload the file to the bucket storage
+    const snapshot = await uploadBytesResumable(storageRef, req.file.buffer, metadata);
+
+    // Grab the public URL
+    const downloadURL = await getDownloadURL(snapshot.ref);
+
+    console.log('File successfully uploaded.');
+    return downloadURL;
+  } catch (error) {
+    console.log("File upload failed");
+    return;
+  }
+};
+
+const giveCurrentDateTime = () => {
+  const today = new Date();
+  const date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+  const time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+  const dateTime = date + ' ' + time;
+  return dateTime;
+};
+
 module.exports = {
   getAllItems,
   getItemById,
   createItem,
   updateItemById,
   deleteItemById,
+  testUpload
 };

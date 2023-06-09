@@ -1,3 +1,4 @@
+
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
@@ -12,6 +13,10 @@ const reviewsRoutes = require('./src/routes/reviewsRoutes');
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+
+
+//===========================
+//=======================================================
 
 
 //Routes
