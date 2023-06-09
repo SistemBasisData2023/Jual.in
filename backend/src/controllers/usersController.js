@@ -61,7 +61,7 @@ const loginUser = async (req, res) => {
       return;
     }
 
-    res.status(200).json({ message: 'Login successful' });
+    res.status(200).json({username: user.username, email: user.email, role: user.role});
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: 'Failed to login' });
@@ -70,6 +70,7 @@ const loginUser = async (req, res) => {
 
 // Get user by ID
 const getUserById = async (req, res) => {
+  
   const { id } = req.params;
   console.log(req.body);
 
@@ -214,6 +215,20 @@ const performTransaction = async (req, res) => {
   }
 };
 
+// Get all users
+const getAllUsers = async (req, res) => {
+  console.log("Test");
+  try {
+    const query = 'SELECT * FROM Users';
+    const result = await db.pool.query(query);
+
+    const users = result.rows;
+    res.status(200).json(users);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: error });
+  }
+};
 
 module.exports = {
   registerUser,
@@ -222,5 +237,6 @@ module.exports = {
   updateUserById,
   deleteUserById,
   topUpBalance,
-  performTransaction
+  performTransaction,
+  getAllUsers
 };

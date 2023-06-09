@@ -1,13 +1,16 @@
 import React, { useState } from 'react';
 import './LoginPage.css'; // Import the CSS file for styling
+import axios from 'axios';
+
+
 
 const LoginPage = () => {
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [isAdmin, setIsAdmin] = useState(false); // State for admin checkbox
+  const [isAdmin, setIsAdmin] = useState('false'); // State for admin checkbox
 
-  const handleEmailChange = (e) => {
-    setEmail(e.target.value);
+  const handleUsernameChange = (e) => {
+    setUsername(e.target.value);
   };
 
   const handlePasswordChange = (e) => {
@@ -20,8 +23,20 @@ const LoginPage = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    axios.post('http://localhost:9000/users/login', {
+      username: username,
+      password: password,
+      role: isAdmin ? 'admin' : 'user'
+    })
+    .then((response) => {
+      console.log(response);
+      window.location.href = '/Home';
+    }, (error) => {
+      console.log(error);
+    });
     // Handle login logic here (e.g., send data to server, validate credentials)
-    console.log('Email:', email);
+    console.log('Username:', username);
     console.log('Password:', password);
     console.log('Admin:', isAdmin);
   };
@@ -35,12 +50,12 @@ const LoginPage = () => {
       <div className="login-container">
         <h2 className="login-header">Sign in to your account</h2> 
         <form className="login-form" onSubmit={handleSubmit}>
-          <label className="login-label">Email</label>
+          <label className="login-label">Username</label>
           <input
             className="login-input"
-            type="email"
-            value={email}
-            onChange={handleEmailChange}
+            type="text"
+            value={username}
+            onChange={handleUsernameChange}
             required
           />
 

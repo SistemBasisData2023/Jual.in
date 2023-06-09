@@ -1,6 +1,7 @@
 
 const express = require('express');
 const app = express();
+const cors = require('cors');
 const bodyParser = require('body-parser');
 const db = require('./src/database/db'); // Updated file path for db.js
 
@@ -13,6 +14,7 @@ const reviewsRoutes = require('./src/routes/reviewsRoutes');
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+app.use(cors());
 
 
 //===========================

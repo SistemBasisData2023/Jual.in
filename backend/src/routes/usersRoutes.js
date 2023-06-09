@@ -9,7 +9,7 @@ router.post('/register', usersController.registerUser);
 router.post('/login', usersController.loginUser);
 
 // Get user by ID
-router.get('/:id', usersController.getUserById);
+router.get('/:id/singleId', usersController.getUserById);
 
 // Update user by ID
 router.put('/:id', usersController.updateUserById);
@@ -23,4 +23,8 @@ router.patch('/:id/topup', usersController.topUpBalance);
 // Perform a transaction between user and admin
 router.post('/transactions', usersController.performTransaction);
 
+// Get All User
+router.get('/allusers', usersController.getAllUsers);
+
 module.exports = router;
+

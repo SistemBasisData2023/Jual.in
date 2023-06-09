@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './RegisterPage.css'; // Import the CSS file for styling
+import axios from 'axios';
 
 const RegisterPage = () => {
   const [username, setUsername] = useState('');
@@ -25,6 +26,19 @@ const RegisterPage = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    axios.post('http://localhost:9000/users/register', {
+      username: username,
+      email: email,
+      password: password,
+      role: userType
+    })
+    .then((response) => {
+      console.log(response);
+      window.location.href = '/LoginPage';
+    }, (error) => {
+      console.log(error);
+    });
+
     // Handle registration logic here (e.g., send data to server, create a new user)
     console.log('Username:', username);
     console.log('Email:', email);
