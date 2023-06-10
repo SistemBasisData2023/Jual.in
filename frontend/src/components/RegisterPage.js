@@ -6,7 +6,7 @@ const RegisterPage = () => {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [userType, setUserType] = useState('user');
+  const [userType, setUserType] = useState(false);
 
   const handleUsernameChange = (e) => {
     setUsername(e.target.value);
@@ -21,7 +21,7 @@ const RegisterPage = () => {
   };
 
   const handleUserTypeChange = (e) => {
-    setUserType(e.target.value);
+    setUserType(!userType);
   };
 
   const handleSubmit = (e) => {
@@ -30,7 +30,7 @@ const RegisterPage = () => {
       username: username,
       email: email,
       password: password,
-      role: userType
+      role: userType ? 'admin' : 'user'
     })
     .then((response) => {
       console.log(response);
@@ -47,7 +47,7 @@ const RegisterPage = () => {
   };
 
   const handleLogin = () => {
-    window.location.href = '/LoginPage';
+    window.location.href = '/';
   };
   const handleLogoClick = () => {
     // Handle logo click logic
@@ -110,7 +110,7 @@ const RegisterPage = () => {
               <input
                 className="mr-2 leading-tight"
                 type="checkbox"
-                checked={userType == "admin"}
+                checked={userType}
                 onChange={handleUserTypeChange}
               />
               <span className="text-sm">Register as admin</span>
