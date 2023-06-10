@@ -22,7 +22,7 @@ const AddItem = () => {
     formData.append('quantity', quantity);
     formData.append('image', image);
     formData.append('category_id', category);
-    formData.append('user_id', sessionStorage.getItem('userId'));
+    formData.append('user_id', sessionStorage.getItem('user_id'));
 
     try {
       // Send the POST request with the form data
@@ -38,9 +38,18 @@ const AddItem = () => {
       setQuantity('');
       setImage(null);
       setCategory('');
+
+      // Redirect to /Home
+      window.location.href = '/Home';
+
+      // Show success message (optional)
+      alert('Item added successfully!');
+
     } catch (error) {
       console.log(error);
     }
+
+    
   };
 
   const handleImageUpload = (e) => {
