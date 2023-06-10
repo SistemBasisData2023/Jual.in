@@ -5,9 +5,12 @@ const { ref, getDownloadURL, uploadBytesResumable } = require("firebase/storage"
 const getAllItems = async (req, res) => {
   try {
     const query = `
-      SELECT Item.*, Category.name AS category_name
+      SELECT Item.*, Category.name AS category_name, ROUND(AVG(Reviews.rating), 1) AS average_rating
       FROM Item
       INNER JOIN Category ON Item.category_id = Category.category_id
+      LEFT JOIN Reviews ON Item.item_id = Reviews.item_id
+      GROUP BY Item.item_id, Category.name
+      ORDER BY Item.item_id;
     `;
     const result = await db.pool.query(query);
 
@@ -25,7 +28,16 @@ const getItemById = async (req, res) => {
   const { id } = req.params;
 
   try {
-    const query = 'SELECT * FROM Item WHERE item_id = $1';
+    const query = `
+      SELECT Item.*, Category.name AS category_name, ROUND(AVG(Reviews.rating), 1) AS average_rating
+      FROM Item
+      INNER JOIN Category ON Item.category_id = Category.category_id
+      LEFT JOIN Reviews ON Item.item_id = Reviews.item_id
+      WHERE Item.item_id = $1
+      GROUP BY Item.item_id, Category.name
+      ORDER BY Item.item_id;
+    `;
+
     const result = await db.pool.query(query, [id]);
 
     if (result.rows.length === 0) {

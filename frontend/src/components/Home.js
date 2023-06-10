@@ -19,7 +19,9 @@ const Home = () => {
   }, []);
 
   const navigateToItemDetails = (itemId) => {
+    sessionStorage.setItem('itemId', itemId);
     window.location.href = `/ItemDetails/${itemId}`;
+    
   };
 
   const navigateToAddItem = () => {
@@ -35,9 +37,9 @@ const Home = () => {
           <h2 className="text-xl font-bold mb-4">Display Items</h2>
           {items.map((item) => (
             <div
-              key={item.id}
+              key={item.item_id}
               className="flex items-center mb-6"
-              onClick={() => navigateToItemDetails(item.id)}
+              onClick={() => navigateToItemDetails(item.item_id)}
               style={{ cursor: 'pointer' }}
             >
               <div className="mr-4">
@@ -58,7 +60,7 @@ const Home = () => {
                         key={index}
                         xmlns="http://www.w3.org/2000/svg"
                         className={`h-4 w-4 fill-current ${
-                          index < Math.floor(item.rating) ? 'text-yellow-500' : 'text-gray-300'
+                          index < Math.floor(item.average_rating) ? 'text-yellow-500' : 'text-gray-300'
                         }`}
                         viewBox="0 0 20 20"
                       >
@@ -68,7 +70,7 @@ const Home = () => {
                         />
                       </svg>
                     ))}
-                    <span className="ml-2 text-gray-500">({item.rating})</span>
+                    <span className="ml-2 text-gray-500">({item.average_rating})</span>
                   </span>
                 </div>
               </div>
