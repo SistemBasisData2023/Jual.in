@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Rating } from "@material-tailwind/react";
+import Navbar from './Navbar';
 
 const ItemDetails = ({ item }) => {
   const [itemDetails, setItemDetails] = useState(null);
@@ -48,53 +49,56 @@ const ItemDetails = ({ item }) => {
 
   return (
     <div>
+
       <div className="container mx-auto my-8">
-        <h1 className="text-3xl font-bold mb-4">Item Details</h1>
+        <div className="bg-white rounded-lg shadow-md p-6">
+          <h1 className="text-3xl font-bold mb-4">Item Details</h1>
 
-        {itemDetails ? (
-          <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-            <img src={itemDetails.image_url} alt="Item" className="mb-4 rounded-md" />
-            <h2 className="text-xl font-bold mb-2">{itemDetails.name}</h2>
-            <p className="text-lg mb-2">Price: {itemDetails.price}</p>
-            <p className="text-lg mb-2">Description: {itemDetails.description}</p>
-            <p className="text-lg mb-2">Quantity: {itemDetails.quantity}</p>
-            <p className="text-lg mb-2">Category: {itemDetails.category_name}</p>
-          </div>
-        ) : (
-          <p>Loading item details...</p>
-        )}
+          {itemDetails ? (
+            <div>
+              <img src={itemDetails.image_url} alt="Item" className="mb-4 rounded-md" />
+              <h2 className="text-xl font-bold mb-2">{itemDetails.name}</h2>
+              <p className="text-lg mb-2">Price: {itemDetails.price}</p>
+              <p className="text-lg mb-2">Description: {itemDetails.description}</p>
+              <p className="text-lg mb-2">Quantity: {itemDetails.quantity}</p>
+              <p className="text-lg mb-2">Category: {itemDetails.category_name}</p>
+            </div>
+          ) : (
+            <p>Loading item details...</p>
+          )}
 
-        <div className="flex items-center space-x-2">
-          <button
-            className={`btn ${selectedRating === null ? 'btn-primary' : 'btn-secondary'}`}
-            onClick={() => handleRatingFilter(null)}
-          >
-            All
-          </button>
-          {[1, 2, 3, 4, 5].map((rating) => (
+          <div className="flex items-center space-x-2">
             <button
-              key={rating}
-              className={`btn ${selectedRating === rating ? 'btn-primary' : 'btn-secondary'}`}
-              onClick={() => handleRatingFilter(rating)}
+              className={`btn ${selectedRating === null ? 'btn-primary' : 'btn-secondary'}`}
+              onClick={() => handleRatingFilter(null)}
             >
-              {rating} Star
+              All
             </button>
-          ))}
-        </div>
-
-        {reviews.length > 0 ? (
-          <div className="bg-white rounded-lg shadow-md p-6 mt-6">
-            {reviews.map((review) => (
-              <div key={review.review_id} className="mb-4">
-                <p>Username: {review.username}</p>
-                <p>Rating: {review.rating}</p>
-                <p>Comment: {review.comment}</p>
-              </div>
+            {[1, 2, 3, 4, 5].map((rating) => (
+              <button
+                key={rating}
+                className={`btn ${selectedRating === rating ? 'btn-primary' : 'btn-secondary'}`}
+                onClick={() => handleRatingFilter(rating)}
+              >
+                {rating} Star
+              </button>
             ))}
           </div>
-        ) : (
-          <p>No reviews found.</p>
-        )}
+
+          {reviews.length > 0 ? (
+            <div className="mt-6">
+              {reviews.map((review) => (
+                <div key={review.review_id} className="mb-4">
+                  <p>Username: {review.username}</p>
+                  <p>Rating: {review.rating}</p>
+                  <p>Comment: {review.comment}</p>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p>No reviews found.</p>
+          )}
+        </div>
       </div>
     </div>
   );
