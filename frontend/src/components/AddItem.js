@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 
 const AddItem = () => {
   const [name, setName] = useState('');
@@ -8,31 +9,41 @@ const AddItem = () => {
   const [image, setImage] = useState(null);
   const [category, setCategory] = useState('');
 
-  const existingCategories = ['Electronics', 'Clothing', 'Home Decor'];
 
-  const handleSubmit = (e) => {
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Create a new item object
-    const newItem = {
-      id: Date.now(),
-      name,
-      price,
-      description,
-      quantity,
-      image,
-      category,
-    };
+    // Create a new instance of FormData
+    const formData = new FormData();
 
-    // TODO: Add code to update the displayItems list or send the new item to an API
+    // Append form data to the FormData object
+    formData.append('name', name);
+    formData.append('price', price);
+    formData.append('description', description);
+    formData.append('quantity', quantity);
+    formData.append('category_id', category);
+    formData.append('image', image);
 
-    // Clear the form fields
-    setName('');
-    setPrice('');
-    setDescription('');
-    setQuantity('');
-    setImage(null);
-    setCategory('');
+    try {
+      // Send the GET request with the form data as parameters
+      const response = await axios.get('http://localhost:9000/items/upload', {
+        params: formData,
+      });
+
+      // Log the response from the backend
+      console.log(response.data);
+
+      // Clear the form fields after successful submission
+      setName('');
+      setPrice('');
+      setDescription('');
+      setQuantity('');
+      setImage(null);
+      setCategory('');
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const handleImageUpload = (e) => {
@@ -105,6 +116,7 @@ const AddItem = () => {
               <input
                 type="file"
                 id="image"
+                name = "image"
                 className="w-full border rounded-md py-2 px-3"
                 onChange={handleImageUpload}
                 accept="image/*"
@@ -123,11 +135,15 @@ const AddItem = () => {
                 required
               >
                 <option value="">Select Category</option>
-                {existingCategories.map((category) => (
-                  <option key={category} value={category}>
-                    {category}
-                  </option>
-                ))}
+                <option value="1">Electronics</option>
+                <option value="2">Households</option>
+                <option value="3">Cars</option>
+                <option value="4">Motorcycle</option>
+                <option value="5">Bike</option>
+                <option value="6">Hobby and Sports</option>
+                <option value="7">Stationery</option>
+                <option value="8">Gadgets</option>
+                            
               </select>
             </div>
             <div className="flex justify-end">
