@@ -26,5 +26,6 @@ router.post('/transactions', usersController.performTransaction);
 // Get All User
 router.get('/allusers', usersController.getAllUsers);
 
+
 module.exports = router;
 

@@ -1,51 +1,49 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faStar } from '@fortawesome/free-solid-svg-icons';
 import Navbar from './Navbar';
 
 const CategoryPage = () => {
-  // Sample data for categories
-  const categories = ['Electronics', 'Clothing', 'Home Decor'];
-
-  // Sample data for items
-  const items = [
-    {
-      id: 1,
-      name: 'Sample Product 1',
-      price: '$19.99',
-      category: 'Electronics',
-      rating: 4.5,
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-    },
-    {
-      id: 2,
-      name: 'Sample Product 2',
-      price: '$29.99',
-      category: 'Clothing',
-      rating: 3.8,
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-    },
-    {
-      id: 3,
-      name: 'Sample Product 3',
-      price: '$9.99',
-      category: 'Home Decor',
-      rating: 4.2,
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-    },
-  ];
-
-  // State to keep track of selected category
+  const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('');
+  const [filteredItems, setFilteredItems] = useState([]);
 
-  // Function to handle category selection
-  const handleCategorySelection = (category) => {
-    setSelectedCategory(category);
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+
+  const fetchCategories = async () => {
+    try {
+      const response = await fetch('http://localhost:9000/items/category/all');
+      const data = await response.json();
+      setCategories(data);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
-  // Filter items based on the selected category
-  const filteredItems = items.filter((item) => item.category === selectedCategory);
+  const handleCategorySelection = async (category) => {
+    setSelectedCategory(category);
+    fetchFilteredItems(category);
+  };
+
+  const fetchFilteredItems = async (category) => {
+    try {
+      const response = await fetch(`http://localhost:9000/items/category/:name?=${category}`);
+      const data = await response.json();
+      setFilteredItems(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleItemClick = (itemId) => {
+    sessionStorage.setItem('itemId', itemId);
+    
+    // Handle item click here, e.g., navigate to item details page programmatically
+    console.log(`Item clicked: ${itemId}`);
+  };
 
   return (
     <div>
@@ -57,13 +55,17 @@ const CategoryPage = () => {
           <div className="flex">
             {categories.map((category) => (
               <button
-                key={category}
+                key={category.category_id}
                 className={`mr-4 py-2 px-4 rounded-md ${
-                  selectedCategory === category ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'
+                  selectedCategory === category.name ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'
+            
                 }`}
-                onClick={() => handleCategorySelection(category)}
+                
+                onClick={() => handleCategorySelection(category.name)}
+                
               >
-                {category}
+              
+                {category.name}
               </button>
             ))}
           </div>
@@ -74,10 +76,11 @@ const CategoryPage = () => {
             <h2 className="text-xl font-bold mb-4">Display Items - {selectedCategory}</h2>
             {filteredItems.length > 0 ? (
               <ul>
-                {filteredItems.map((item) => (
-                  <li key={item.id} className="mb-6">
-                    <Link to={`/ItemDetails/${item.id}`}>
-                      <div className="flex items-center">
+                {filteredItems.length > 0 ? (
+                <ul>
+                  {filteredItems.map((item) => (
+                    <li key={item.item_id} className="mb-6">
+                      <div className="flex items-center" onClick={() => handleItemClick(item.item_id)}>
                         <div className="mr-4">
                           <img className="w-32 h-32 rounded-md" src={item.image_url} alt="Product" />
                         </div>
@@ -91,19 +94,22 @@ const CategoryPage = () => {
                                   key={index}
                                   icon={faStar}
                                   className={`h-4 w-4 fill-current ${
-                                    index < Math.floor(item.rating) ? 'text-yellow-500' : 'text-gray-300'
+                                    index < Math.floor(item.average_rating) ? 'text-yellow-500' : 'text-gray-300'
                                   }`}
                                 />
                               ))}
-                              <span className="ml-2 text-gray-500">({item.rating})</span>
+                              <span className="ml-2 text-gray-500">({item.average_rating})</span>
                             </span>
                           </div>
                         </div>
                       </div>
-                    </Link>
-                    <p className="text-gray-500 mt-2">{item.description}</p>
-                  </li>
-                ))}
+                      <p className="text-gray-500 mt-2">{item.description}</p>
+                    </li>
+                  ))}
+              </ul>
+            ) : (
+              <p>No items found in this category.</p>
+            )}
               </ul>
             ) : (
               <p>No items found in this category.</p>

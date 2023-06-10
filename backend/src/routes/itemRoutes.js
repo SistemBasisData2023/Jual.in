@@ -7,6 +7,9 @@ const upload = require('../database/multer');
 // GET all items
 router.get('/all', itemController.getAllItems);
 
+// GET all Category
+router.get('/category/all', itemController.getAllCategories);
+
 // GET item by ID
 router.get('/:id', itemController.getItemById);
 
@@ -22,5 +25,7 @@ router.delete('/:id/delete', itemController.deleteItemById);
 // Upload File
 router.post('/create', upload.single("image"), itemController.createItem);
 
+// Get Item by category name
+router.get('/category/:name', itemController.getItemsByCategory);
 
 module.exports = router;

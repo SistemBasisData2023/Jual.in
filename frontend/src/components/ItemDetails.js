@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Rating } from '@material-tailwind/react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faStar } from '@fortawesome/free-solid-svg-icons';
 import Navbar from './Navbar';
 
 const ItemDetails = ({ item }) => {
@@ -83,12 +84,20 @@ const ItemDetails = ({ item }) => {
             {[1, 2, 3, 4, 5].map((rating) => (
               <button
                 key={rating}
-                className={`px-4 py-2 rounded-lg ${
-                  selectedRating === rating ? 'bg-blue-500 text-white' : 'bg-gray-300 text-gray-700'
+                className={`px-4 py-2 rounded-lg border ${
+                  selectedRating === rating ? 'border-blue-500 text-blue-500' : 'border-gray-300 text-gray-700'
                 }`}
                 onClick={() => handleRatingFilter(rating)}
               >
-                {rating} Star
+                {Array.from({ length: 5 }).map((_, index) => (
+                  <FontAwesomeIcon
+                    key={index}
+                    icon={faStar}
+                    className={`h-4 w-4 fill-current ${
+                      index < rating ? 'text-yellow-500' : 'text-gray-300'
+                    }`}
+                  />
+                ))}
               </button>
             ))}
           </div>
@@ -97,9 +106,19 @@ const ItemDetails = ({ item }) => {
             <div className="mt-6">
               {reviews.map((review) => (
                 <div key={review.review_id} className="bg-white rounded-lg shadow-md p-4 mb-4">
-                  <p className="text-lg font-bold">Username: {review.username}</p>
-                  <Rating value={review.rating} color="yellow" size="regular" />
-                  <p className="text-lg mt-2">Comment: {review.comment}</p>
+                  <p className="text-lg font-bold">{review.username}</p>
+                  <div className="flex items-center">
+                    {Array.from({ length: 5 }).map((_, index) => (
+                      <FontAwesomeIcon
+                        key={index}
+                        icon={faStar}
+                        className={`h-4 w-4 fill-current ${
+                          index < review.rating ? 'text-yellow-500' : 'text-gray-300'
+                        }`}
+                      />
+                    ))}
+                  </div>
+                  <p className="text-lg mt-2">"{review.comment}"</p>
                 </div>
               ))}
             </div>

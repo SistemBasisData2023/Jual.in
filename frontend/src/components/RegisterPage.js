@@ -47,77 +47,97 @@ const RegisterPage = () => {
   };
 
   const handleLogin = () => {
-    window.location.href = '/login';
+    window.location.href = '/LoginPage';
   };
-
+  const handleLogoClick = () => {
+    // Handle logo click logic
+    console.log('Logo clicked!');
+  };
   return (
-    <div className="register-page">
-      <div className="register-container">
-        <h2 className="register-header">Create an account</h2>
-        <form className="register-form" onSubmit={handleSubmit}>
-          <label className="register-label">Username</label>
-          <input
-            className="register-input"
-            type="text"
-            value={username}
-            onChange={handleUsernameChange}
-            required
-          />
-
-          <label className="register-label">Email</label>
-          <input
-            className="register-input"
-            type="email"
-            value={email}
-            onChange={handleEmailChange}
-            required
-          />
-
-          <label className="register-label">Password</label>
-          <input
-            className="register-input"
-            type="password"
-            value={password}
-            onChange={handlePasswordChange}
-            required
-          />
-
-          <div className="user-type-container">
-            <label className="user-type-label">User Type:</label>
-            <label className="user-type-radio">
-              <input
-                type="radio"
-                value="user"
-                checked={userType === 'user'}
-                onChange={handleUserTypeChange}
-              />
-              User
+    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+      <div className="w-full max-w-md">
+        <div className="logo-container flex justify-center mb-4">
+          <div className="logo-text" onClick={handleLogoClick}>
+            <span className="font-bold text-7xl text-blue-500">JUALIN</span>
+          </div>
+        </div>
+        <form className="bg-white rounded-lg shadow-md px-8 pt-6 pb-8 mb-4" onSubmit={handleSubmit}>
+          <h1 className="text-3xl font-bold mb-8 text-center">Register</h1>
+          <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="username">
+              Username
             </label>
-            <label className="user-type-radio">
+            <input
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              id="username"
+              type="text"
+              placeholder="Enter your username"
+              value={username}
+              onChange={handleUsernameChange}
+              required
+            />
+          </div>
+          <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
+              Email
+            </label>
+            <input
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              id="email"
+              type="email"
+              placeholder="Enter your email"
+              value={email}
+              onChange={handleEmailChange}
+              required
+            />
+          </div>
+          <div className="mb-6">
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="password">
+              Password
+            </label>
+            <input
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              id="password"
+              type="password"
+              placeholder="Enter your password"
+              value={password}
+              onChange={handlePasswordChange}
+              required
+            />
+          </div>
+          <div className="mb-6">
+            <label className="flex items-center">
               <input
-                type="radio"
-                value="admin"
-                checked={userType === 'admin'}
+                className="mr-2 leading-tight"
+                type="checkbox"
+                checked={userType == "admin"}
                 onChange={handleUserTypeChange}
               />
-              Admin
+              <span className="text-sm">Register as admin</span>
             </label>
           </div>
-
-          <button className="register-button" type="submit">
-            Register
-          </button>
+          <div className="flex items-center justify-between">
+            <button
+              className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+              type="submit"
+            >
+              Register
+            </button>
+          </div>
         </form>
-
-        <div className="login-link">
-          Already have an account?{' '}
-          <button className="login-button" onClick={handleLogin}>
-            Sign in
+        <div className="text-center">
+          <p className="text-sm text-gray-600 mb-2">Already have an account?</p>
+          <button
+            className="text-blue-500 hover:text-blue-700 focus:outline-none"
+            onClick={handleLogin}
+          >
+            Login
           </button>
         </div>
       </div>
     </div>
   );
 };
+
 
 export default RegisterPage;

@@ -1,6 +1,7 @@
 const db = require('../database/db');
 const { storage } = require('../database/firebase');
 const { ref, getDownloadURL, uploadBytesResumable } = require("firebase/storage");
+const { get } = require('../routes/reviewsRoutes');
 
 const getAllItems = async (req, res) => {
   try {
@@ -95,6 +96,8 @@ const updateItemById = async (req, res) => {
   const { name, description, price, category_id, quantity, user_id } = req.body;
 
   try {
+    const image_url = await handleUpload(req, name); // Pass item name to handleUpload function
+
     const query = 'UPDATE Item SET name = $1, description = $2, price = $3, image_url = $4, category_id = $5, quantity = $6 WHERE item_id = $7';
     const values = [name, description, price, image_url, category_id, quantity, id];
     await db.pool.query(query, values);
@@ -199,11 +202,57 @@ const giveCurrentDateTime = () => {
   return dateTime;
 };
 
+// Get all categories
+const getAllCategories = async (req, res) => {
+  try {
+    const query = 'SELECT * FROM Category ORDER BY category_id';
+    const result = await db.pool.query(query);
+    const categories = result.rows;
+    res.status(200).json(categories);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: 'Failed to retrieve categories' });
+  }
+};
+
+const getItemsByCategory = async (req, res) => {
+  const { category_name } = req.body;
+  console.log(req.body);
+
+  try {
+    const query = `
+      SELECT Item.*, Category.name AS category_name, ROUND(AVG(Reviews.rating), 1) AS average_rating
+      FROM Item
+      INNER JOIN Category ON Item.category_id = Category.category_id
+      LEFT JOIN Reviews ON Item.item_id = Reviews.item_id
+      WHERE Category.name = $1
+      GROUP BY Item.item_id, Category.name
+      ORDER BY Item.item_id;
+    `;
+
+    const result = await db.pool.query(query, [category_name]);
+
+    if (result.rows.length === 0) {
+      res.status(404).json({ error: 'No items found in this category.' });
+      return;
+    }
+
+    const items = result.rows;
+    res.status(200).json(items);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: error.message });
+  }
+};
+
+
 module.exports = {
   getAllItems,
   getItemById,
   createItem,
   updateItemById,
   deleteItemById,
-  testUpload
+  testUpload,
+  getAllCategories,
+  getItemsByCategory
 };
