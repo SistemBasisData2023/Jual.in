@@ -1,20 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faStar } from '@fortawesome/free-solid-svg-icons';
-import Navbar from './Navbar';
+import { faStar, faShoppingCart, faPlus, faMinus } from '@fortawesome/free-solid-svg-icons';
 
 const ItemDetails = ({ item }) => {
   const [itemDetails, setItemDetails] = useState(null);
   const [selectedRating, setSelectedRating] = useState(null);
   const [reviews, setReviews] = useState([]);
+  const [quantity, setQuantity] = useState(1); // Initial quantity is set to 1
 
   useEffect(() => {
     const fetchItemDetails = async () => {
       try {
         const itemResponse = await axios.get(`http://localhost:9000/items/${sessionStorage.getItem('itemId')}`);
         setItemDetails(itemResponse.data);
-        console.log(itemResponse.data);
       } catch (error) {
         console.log(error);
       }
@@ -33,7 +32,6 @@ const ItemDetails = ({ item }) => {
     try {
       const reviewsResponse = await axios.get(url);
       setReviews(reviewsResponse.data);
-      console.log(reviewsResponse.data);
     } catch (error) {
       console.log(error);
     }
@@ -52,9 +50,34 @@ const ItemDetails = ({ item }) => {
     return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
   };
 
+  const handleAddToCart = () => {
+    // Get the current cart data from session storage
+    const cartData = JSON.parse(sessionStorage.getItem('cartData')) || [];
+
+    // Add the current item's data to the cart data
+    const newItem = { itemId: sessionStorage.getItem('itemId'), quantity };
+    cartData.push(newItem);
+
+    // Update the session storage with the updated cart data
+    sessionStorage.setItem('cartData', JSON.stringify(cartData));
+
+    console.log('Item added to cart');
+  };
+
+  const increaseQuantity = () => {
+    if (quantity < itemDetails.quantity) {
+      setQuantity(quantity + 1);
+    }
+  };
+
+  const decreaseQuantity = () => {
+    if (quantity > 1) {
+      setQuantity(quantity - 1);
+    }
+  };
+
   return (
     <div className="bg-gray-100 min-h-screen">
-
       <div className="container mx-auto py-8">
         <div className="bg-white rounded-lg shadow-md p-6">
           <h1 className="text-3xl font-bold mb-4">Item Details</h1>
@@ -65,8 +88,34 @@ const ItemDetails = ({ item }) => {
               <h2 className="text-xl font-bold mb-2">{itemDetails.name}</h2>
               <p className="text-lg mb-2">Price: Rp{formatPrice(itemDetails.price)},00</p>
               <p className="text-lg mb-2">Description: {itemDetails.description}</p>
-              <p className="text-lg mb-2">Quantity: {itemDetails.quantity}</p>
+              <p className="text-lg mb-2">Stock: {itemDetails.quantity}</p>
               <p className="text-lg mb-2">Category: {itemDetails.category_name}</p>
+
+              <div className="flex items-center space-x-4 mt-4">
+                <button
+                  className="bg-blue-500 hover:bg-blue-600 text-white rounded-lg px-4 py-2 flex items-center space-x-2"
+                  onClick={decreaseQuantity}
+                  disabled={quantity === 1} // Disable the button when quantity is 1
+                >
+                  <FontAwesomeIcon icon={faMinus} />
+                </button>
+                <span>{quantity}</span>
+                <button
+                  className="bg-blue-500 hover:bg-blue-600 text-white rounded-lg px-4 py-2 flex items-center space-x-2"
+                  onClick={increaseQuantity}
+                  disabled={quantity === itemDetails.quantity} // Disable the button when quantity reaches the item's stock
+                >
+                  <FontAwesomeIcon icon={faPlus} />
+                </button>
+              </div>
+
+              <button
+                className="bg-blue-500 hover:bg-blue-600 text-white rounded-lg px-4 py-2 mt-4 flex items-center space-x-2"
+                onClick={handleAddToCart}
+              >
+                <FontAwesomeIcon icon={faShoppingCart} />
+                <span>Add to Cart</span>
+              </button>
             </div>
           ) : (
             <p>Loading item details...</p>

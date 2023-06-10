@@ -28,6 +28,113 @@ const Home = () => {
     window.location.href = '/AddItem';
   };
 
+  const formatPrice = (price) => {
+    const parts = price.toString().split('.');
+    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    return parts.join('.');
+  };
+
+  const renderItems = () => {
+    const itemsPerRow = 5;
+    const gap = 10; // Gap between item containers (in pixels)
+    const containerWidth = `calc(${100 / itemsPerRow}% - ${gap * 2}px)`;
+    const containerStyle = {
+      width: containerWidth,
+      marginRight: `${gap}px`,
+      marginLeft: `${gap}px`,
+    };
+
+    const itemContainerStyle = {
+      height: '100%',
+      display: 'flex',
+      justifyContent: 'center',
+      flexDirection: 'column',
+      padding: '20px',
+      border: '1px solid #ccc',
+      borderRadius: '4px',
+      cursor: 'pointer'
+    };
+
+    const itemImageStyle = {
+      width: '200px',
+      height: '200px',
+      marginBottom: '10px',
+      borderRadius: '4px',
+    };
+
+    const itemNameStyle = {
+      fontSize: '16px',
+      fontWeight: 'bold',
+      marginBottom: '6px',
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+      whiteSpace: 'nowrap',
+    };
+
+    const itemPriceStyle = {
+      fontSize: '14px',
+      fontWeight: 'bold',
+      color: '#888',
+      marginBottom: '6px',
+    };
+
+    const itemRatingStyle = {
+      display: 'flex',
+      alignItems: 'center',
+      fontSize: '14px',
+      color: '#888',
+    };
+
+    const rows = [];
+
+    for (let i = 0; i < items.length; i += itemsPerRow) {
+      const rowItems = items.slice(i, i + itemsPerRow);
+
+      const row = (
+        <div key={i} className="flex">
+          {rowItems.map((item) => (
+            <div
+              key={item.item_id}
+              className="flex flex-col items-center mb-6"
+              onClick={() => navigateToItemDetails(item.item_id)}
+              style={containerStyle}
+            >
+              <div style={itemContainerStyle}>
+                <img className="w-32 h-32 rounded-md" src={item.image_url} alt="Product" style={itemImageStyle} />
+                <div>
+                  <h3 className="text-lg font-bold" style={itemNameStyle}>
+                    {item.name.length > 15 ? `${item.name.slice(0, 15)}...` : item.name}
+                  </h3>
+                  <p className="text-gray-500" style={itemPriceStyle}>
+                    Rp{formatPrice(item.price)}
+                  </p>
+                  <div className="flex items-center mt-2" style={itemRatingStyle}>
+                    <span className="text-yellow-500 flex items-center">
+                      {Array.from({ length: 5 }).map((_, index) => (
+                        <FontAwesomeIcon
+                          key={index}
+                          icon={faStar}
+                          className={`h-4 w-4 fill-current ${
+                            index < Math.floor(item.average_rating) ? 'text-yellow-500' : 'text-gray-300'
+                          }`}
+                        />
+                      ))}
+                      <span className="ml-2 text-gray-500">({item.average_rating})</span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      );
+
+      rows.push(row);
+    }
+
+    return rows;
+  };
+
   return (
     <div>
       <div className="container mx-auto my-8">
@@ -35,37 +142,7 @@ const Home = () => {
 
         <div className="bg-white rounded-lg shadow-md p-6 mb-6">
           <h2 className="text-xl font-bold mb-4">Display Items</h2>
-          {items.map((item) => (
-            <div
-              key={item.item_id}
-              className="flex items-center mb-6"
-              onClick={() => navigateToItemDetails(item.item_id)}
-              style={{ cursor: 'pointer' }}
-            >
-              <div className="mr-4">
-                <img className="w-32 h-32 rounded-md" src={item.image_url} alt="Product" />
-              </div>
-              <div>
-                <h3 className="text-lg font-bold">{item.name}</h3>
-                <p className="text-gray-500">Price: {item.price}</p>
-                <p className="text-gray-500">Category: {item.category_name}</p>
-                <div className="flex items-center mt-2">
-                  <span className="text-yellow-500 flex items-center">
-                    {Array.from({ length: 5 }).map((_, index) => (
-                      <FontAwesomeIcon
-                        key={index}
-                        icon={faStar}
-                        className={`h-4 w-4 fill-current ${
-                          index < Math.floor(item.average_rating) ? 'text-yellow-500' : 'text-gray-300'
-                        }`}
-                      />
-                    ))}
-                    <span className="ml-2 text-gray-500">({item.average_rating})</span>
-                  </span>
-                </div>
-              </div>
-            </div>
-          ))}
+          {renderItems()}
         </div>
 
         <button

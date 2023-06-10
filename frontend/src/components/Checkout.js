@@ -1,89 +1,81 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import Navbar from './Navbar';
 
 const Checkout = () => {
-  const [cartItems, setCartItems] = useState([
-    {
-      id: 1,
-      name: 'Sample Product 1',
-      price: 'Rp 19,000',
-      quantity: 2,
-      imageUrl: 'https://example.com/sample-product-image1.jpg',
-    },
-    {
-      id: 2,
-      name: 'Sample Product 2',
-      price: 'Rp 29,000',
-      quantity: 1,
-      imageUrl: 'https://example.com/sample-product-image2.jpg',
-    },
-    {
-      id: 3,
-      name: 'Sample Product 3',
-      price: 'Rp 9,000',
-      quantity: 3,
-      imageUrl: 'https://example.com/sample-product-image3.jpg',
-    },
-  ]);
-
+  const [cartItems, setCartItems] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
+  const cartData = JSON.parse(sessionStorage.getItem('cartData') || '[]');
 
   useEffect(() => {
-    const calculateTotalPrice = () => {
-      // Fetch the real price information from the server
-      // Replace this code with your actual API or database call
-      const fetchPricesFromServer = async () => {
-        try {
-          const response = await fetch('https://api.example.com/prices');
-          const data = await response.json();
-
-          // Map the fetched prices to the cart items
-          const updatedCartItems = cartItems.map((item) => {
-            const priceData = data.find((priceItem) => priceItem.id === item.id);
-            const price = priceData ? priceData.price : item.price;
-            return { ...item, price };
-          });
-
-          setCartItems(updatedCartItems);
-        } catch (error) {
-          console.error('Error fetching prices:', error);
-        }
-      };
-
-      fetchPricesFromServer();
+    const fetchItemDetails = async () => {
+      try {
+        const itemPromises = cartData.map((item) =>
+          axios.get(`http://localhost:9000/items/${item.itemId}`)
+        );
+        const itemResponses = await Promise.all(itemPromises);
+        const updatedCartItems = itemResponses.map((response, index) => {
+          const itemData = response.data;
+          const item = cartData[index];
+          return { ...itemData, quantity: item.quantity };
+        });
+        setCartItems(updatedCartItems);
+      } catch (error) {
+        console.error('Error fetching item details:', error);
+      }
     };
 
-    calculateTotalPrice();
-  }, []); // Empty dependency array to only run once on component mount
+    fetchItemDetails();
+  }, []);
 
   useEffect(() => {
-    const calculateTotalPrice = () => {
-      const total = cartItems.reduce(
-        (accumulator, item) =>
-          accumulator + parseFloat(item.price.replace(/[^0-9.-]+/g, '')) * item.quantity,
-        0
-      );
+    const calculateTotalPrice = async () => {
+      const total = cartItems.reduce((accumulator, item) => {
+        const price = String(item.price || '0');
+        const numericPrice = parseFloat(price.replace(/[^0-9.-]+/g, ''));
+
+        
+        console.log("accumulator " + accumulator)
+        console.log("price " +price)
+        console.log("num price " +numericPrice)
+        console.log("quantity " +item.quantity)
+        return accumulator + numericPrice * item.quantity;
+        
+      }, 0);
+      console.log("total  " + total)
       setTotalPrice(total);
     };
-
+  
     calculateTotalPrice();
   }, [cartItems]);
+  
 
   const handleIncreaseQuantity = (itemId) => {
     setCartItems((prevItems) =>
       prevItems.map((item) =>
-        item.id === itemId ? { ...item, quantity: item.quantity + 1 } : item
+        item.id === itemId
+          ? {
+              ...item,
+              quantity: Math.min(item.quantity + 1, item.availableQuantity), // Check against available quantity
+            }
+          : item
       )
     );
   };
-
+  
   const handleDecreaseQuantity = (itemId) => {
     setCartItems((prevItems) =>
       prevItems.map((item) =>
-        item.id === itemId && item.quantity > 1 ? { ...item, quantity: item.quantity - 1 } : item
+        item.id === itemId && item.quantity > 1
+          ? {
+              ...item,
+              quantity: item.quantity - 1,
+            }
+          : item
       )
     );
   };
+  
 
   return (
     <div>
@@ -95,7 +87,7 @@ const Checkout = () => {
           {cartItems.map((item) => (
             <div key={item.id} className="flex items-center mb-6">
               <div className="mr-4">
-                <img className="w-32 h-32 rounded-md" src={item.imageUrl} alt="Product" />
+                <img className="w-32 h-32 rounded-md" src={item.image_url} alt="Product" />
               </div>
               <div>
                 <h3 className="text-lg font-bold">{item.name}</h3>
