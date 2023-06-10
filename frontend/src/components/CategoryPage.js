@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faStar } from '@fortawesome/free-solid-svg-icons';
 import Navbar from './Navbar';
 
 const CategoryPage = () => {
@@ -73,13 +75,33 @@ const CategoryPage = () => {
             {filteredItems.length > 0 ? (
               <ul>
                 {filteredItems.map((item) => (
-                  <li key={item.id}>
+                  <li key={item.id} className="mb-6">
                     <Link to={`/ItemDetails/${item.id}`}>
-                      <h3 className="font-bold">{item.name}</h3>
+                      <div className="flex items-center">
+                        <div className="mr-4">
+                          <img className="w-32 h-32 rounded-md" src={item.image_url} alt="Product" />
+                        </div>
+                        <div>
+                          <h3 className="text-lg font-bold">{item.name}</h3>
+                          <p className="text-gray-500">Price: {item.price}</p>
+                          <div className="flex items-center mt-2">
+                            <span className="text-yellow-500 flex items-center">
+                              {Array.from({ length: 5 }).map((_, index) => (
+                                <FontAwesomeIcon
+                                  key={index}
+                                  icon={faStar}
+                                  className={`h-4 w-4 fill-current ${
+                                    index < Math.floor(item.rating) ? 'text-yellow-500' : 'text-gray-300'
+                                  }`}
+                                />
+                              ))}
+                              <span className="ml-2 text-gray-500">({item.rating})</span>
+                            </span>
+                          </div>
+                        </div>
+                      </div>
                     </Link>
-                    <p>Price: {item.price}</p>
-                    <p>Rating: {item.rating}</p>
-                    <p>{item.description}</p>
+                    <p className="text-gray-500 mt-2">{item.description}</p>
                   </li>
                 ))}
               </ul>

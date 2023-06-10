@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faStar } from '@fortawesome/free-solid-svg-icons';
 
 const Home = () => {
   const [items, setItems] = useState([]);
@@ -21,7 +22,6 @@ const Home = () => {
   const navigateToItemDetails = (itemId) => {
     sessionStorage.setItem('itemId', itemId);
     window.location.href = `/ItemDetails/${itemId}`;
-    
   };
 
   const navigateToAddItem = () => {
@@ -43,11 +43,7 @@ const Home = () => {
               style={{ cursor: 'pointer' }}
             >
               <div className="mr-4">
-                <img
-                  className="w-32 h-32 rounded-md"
-                  src={item.image_url}
-                  alt="Product"
-                />
+                <img className="w-32 h-32 rounded-md" src={item.image_url} alt="Product" />
               </div>
               <div>
                 <h3 className="text-lg font-bold">{item.name}</h3>
@@ -56,19 +52,13 @@ const Home = () => {
                 <div className="flex items-center mt-2">
                   <span className="text-yellow-500 flex items-center">
                     {Array.from({ length: 5 }).map((_, index) => (
-                      <svg
+                      <FontAwesomeIcon
                         key={index}
-                        xmlns="http://www.w3.org/2000/svg"
+                        icon={faStar}
                         className={`h-4 w-4 fill-current ${
                           index < Math.floor(item.average_rating) ? 'text-yellow-500' : 'text-gray-300'
                         }`}
-                        viewBox="0 0 20 20"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          d="M10 2C5.639 2 2 5.639 2 10c0 4.362 3.639 8 8 8 4.362 0 8-3.638 8-8 0-4.361-3.638-8-8-8zm0 14.723l-2.765-1.553C6.54 14.02 4.5 11.43 4.5 8.75c0-.27.023-.53.068-.781L1.277 5.235l1.932-.633 2.02-1.477c.207-.15.481-.185.719-.082l2.482 1.019.749-1.876C10.838.71 11.228.5 11.63.5c.39 0 .78.208.98.589l.717 1.876 2.482-1.019c.238-.103.512-.068.719.082l2.02 1.477 1.932.633-2.79 1.752c.053.253.08.514.08.781 0 2.68-2.04 5.27-5.468 5.938L10 16.723z"
-                        />
-                      </svg>
+                      />
                     ))}
                     <span className="ml-2 text-gray-500">({item.average_rating})</span>
                   </span>
