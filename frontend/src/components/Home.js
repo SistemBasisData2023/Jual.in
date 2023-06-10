@@ -1,32 +1,22 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+
 
 const Home = () => {
-  const displayItems = [
-    {
-      id: 1,
-      name: 'Sample Product 1',
-      price: '$19.99',
-      category: 'Electronics',
-      rating: 4.5,
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-    },
-    {
-      id: 2,
-      name: 'Sample Product 2',
-      price: '$29.99',
-      category: 'Clothing',
-      rating: 3.8,
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-    },
-    {
-      id: 3,
-      name: 'Sample Product 3',
-      price: '$9.99',
-      category: 'Home Decor',
-      rating: 4.2,
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-    },
-  ];
+  const [items, setItems] = useState([]);
+
+  useEffect(() => {
+    const fetchItems = async () => {
+      try {
+        const response = await axios.get('http://localhost:9000/items/all');
+        setItems(response.data);
+      } catch (error) {
+        console.error('Error fetching items:', error);
+      }
+    };
+
+    fetchItems();
+  }, []);
 
   const navigateToItemDetails = (itemId) => {
     window.location.href = `/ItemDetails/${itemId}`;
@@ -43,7 +33,7 @@ const Home = () => {
 
         <div className="bg-white rounded-lg shadow-md p-6 mb-6">
           <h2 className="text-xl font-bold mb-4">Display Items</h2>
-          {displayItems.map((item) => (
+          {items.map((item) => (
             <div
               key={item.id}
               className="flex items-center mb-6"
@@ -53,14 +43,14 @@ const Home = () => {
               <div className="mr-4">
                 <img
                   className="w-32 h-32 rounded-md"
-                  src="https://example.com/sample-product-image.jpg"
+                  src={item.image_url}
                   alt="Product"
                 />
               </div>
               <div>
                 <h3 className="text-lg font-bold">{item.name}</h3>
                 <p className="text-gray-500">Price: {item.price}</p>
-                <p className="text-gray-500">Category: {item.category}</p>
+                <p className="text-gray-500">Category: {item.category_name}</p>
                 <div className="flex items-center mt-2">
                   <span className="text-yellow-500 flex items-center">
                     {Array.from({ length: 5 }).map((_, index) => (

@@ -2,10 +2,13 @@ const db = require('../database/db');
 const { storage } = require('../database/firebase');
 const { ref, getDownloadURL, uploadBytesResumable } = require("firebase/storage");
 
-// Get all items
 const getAllItems = async (req, res) => {
   try {
-    const query = 'SELECT * FROM Item';
+    const query = `
+      SELECT Item.*, Category.name AS category_name
+      FROM Item
+      INNER JOIN Category ON Item.category_id = Category.category_id
+    `;
     const result = await db.pool.query(query);
 
     const items = result.rows;
@@ -15,6 +18,7 @@ const getAllItems = async (req, res) => {
     res.status(500).json({ error: 'Failed to retrieve items' });
   }
 };
+
 
 // Get item by ID
 const getItemById = async (req, res) => {

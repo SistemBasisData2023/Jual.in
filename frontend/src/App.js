@@ -7,10 +7,11 @@ import Checkout from './components/Checkout';
 import AccountPage from './components/AccountPage';
 import HistoryPage from './components/HistoryPage';
 import RegisterPage from './components/RegisterPage';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import CategoryPage from './components/CategoryPage';
 import ItemDetails from './components/ItemDetails';
 import AddItem from './components/AddItem';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+
 
 export default function App() {
   const displayItems = [
@@ -48,9 +49,19 @@ export default function App() {
     image: null,
     category: 'Electronics',
   };
+
+  function NavbarWrapper() {
+    const location = useLocation();
+  
+    const showNavbar = !['/LoginPage', '/RegisterPage'].includes(location.pathname);
+  
+    return showNavbar ? <Navbar username="JohnDoe" email="johndoe@example.com" balance={100000} /> : null;
+  }
+
+
   return (
     <Router>
-      <Navbar username="JohnDoe" email="johndoe@example.com" balance={100000} />
+      <NavbarWrapper />
       <Routes>
         <Route path="/Home" element={<Home items={displayItems} />} />
         <Route path="/Checkout" element={<Checkout />} />
@@ -60,7 +71,7 @@ export default function App() {
         <Route path="/RegisterPage" element={<RegisterPage />} />
         <Route path="/Category" element={<CategoryPage />} />
         <Route path="/ItemDetails/:id" element={<ItemDetails item={item} />} />
-        <Route path="/" element={<Home items={displayItems} />} />
+        <Route path="/" element={<LoginPage />} />
         <Route path="/AddItem" element={<AddItem />} />
       </Routes>
     </Router>
