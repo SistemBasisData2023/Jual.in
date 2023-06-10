@@ -78,10 +78,16 @@ class ReviewsController {
 
   // Get reviews based on rating
   static async getReviewsByRating(req, res) {
-    const { rating } = req.query;
-    console.log(rating)
-    const query = 'SELECT * FROM Reviews WHERE rating = $1';
-    const values = [rating];
+    const { rating, itemId } = req.params;
+
+    const query = `
+      SELECT r.*, u.username
+      FROM reviews r
+      JOIN users u ON r.user_id = u.user_id
+      WHERE r.item_id = $1 AND r.rating = $2;
+    `;
+        
+    const values = [itemId, rating];
 
     try {
       const result = await pool.query(query, values);
@@ -92,6 +98,7 @@ class ReviewsController {
       res.status(500).json({ error: 'Failed to fetch reviews' });
     }
   }
+
 
   static async getAllRatings(req, res) {
     const query = 'SELECT DISTINCT rating FROM reviews';
@@ -105,6 +112,28 @@ class ReviewsController {
       res.status(500).json({ error: 'Failed to fetch ratings' });
     }
   }
+  static async getReviewsByItemId(req, res) {
+    const itemId = req.params.itemId;
+  
+    const query = 'SELECT r.*, u.username FROM reviews r JOIN users u ON r.user_id = u.user_id WHERE r.item_id = $1 ORDER BY r.rating DESC';
+    const values = [itemId];
+    console.log(values);
+  
+    try {
+      const result = await pool.query(query, values);
+      const reviews = result.rows;
+  
+      if (reviews.length === 0) {
+        res.status(404).json({ error: 'No reviews found for the item' });
+      } else {
+        res.status(200).json(reviews);
+      }
+    } catch (error) {
+      console.error('Error fetching reviews:', error);
+      res.status(500).json({ error: 'Failed to fetch reviews' });
+    }
+  }
+  
   
 }
 
