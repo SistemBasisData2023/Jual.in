@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import Navbar from './Navbar';
 
 const CategoryPage = () => {
@@ -46,7 +47,6 @@ const CategoryPage = () => {
 
   return (
     <div>
-
       <div className="container mx-auto my-8">
         <h1 className="text-3xl font-bold mb-4">Welcome to JUALIN E-commerce!</h1>
 
@@ -74,7 +74,9 @@ const CategoryPage = () => {
               <ul>
                 {filteredItems.map((item) => (
                   <li key={item.id}>
-                    <h3>{item.name}</h3>
+                    <Link to={`/ItemDetails/${item.id}`}>
+                      <h3 className="font-bold">{item.name}</h3>
+                    </Link>
                     <p>Price: {item.price}</p>
                     <p>Rating: {item.rating}</p>
                     <p>{item.description}</p>
