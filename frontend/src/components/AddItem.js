@@ -14,27 +14,24 @@ const AddItem = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Create a new instance of FormData
+    // Create a new FormData object
     const formData = new FormData();
-
-    // Append form data to the FormData object
     formData.append('name', name);
     formData.append('price', price);
     formData.append('description', description);
     formData.append('quantity', quantity);
-    formData.append('category_id', category);
     formData.append('image', image);
+    formData.append('category_id', category);
+    formData.append('user_id', sessionStorage.getItem('userId'));
 
     try {
-      // Send the GET request with the form data as parameters
-      const response = await axios.get('http://localhost:9000/items/upload', {
-        params: formData,
-      });
+      // Send the POST request with the form data
+      const response = await axios.post('http://localhost:9000/items/create', formData);
 
       // Log the response from the backend
       console.log(response.data);
 
-      // Clear the form fields after successful submission
+      // Clear the form fields
       setName('');
       setPrice('');
       setDescription('');
@@ -48,6 +45,7 @@ const AddItem = () => {
 
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
+    console.log(file);
     setImage(file);
   };
 

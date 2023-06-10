@@ -61,7 +61,7 @@ const loginUser = async (req, res) => {
       return;
     }
 
-    res.status(200).json({username: user.username, email: user.email, role: user.role});
+    res.status(200).json({user_id: user.user_id, username: user.username, email: user.email, role: user.role});
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: 'Failed to login' });

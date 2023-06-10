@@ -12,6 +12,7 @@ const getAllItems = async (req, res) => {
       GROUP BY Item.item_id, Category.name
       ORDER BY Item.item_id;
     `;
+    
     const result = await db.pool.query(query);
 
     const items = result.rows;
@@ -55,13 +56,10 @@ const getItemById = async (req, res) => {
 
 // Create a new item with image upload
 const createItem = async (req, res) => {
-  const { name, description, price, category_id, quantity } = req.body;
-  console.log(req.body);
+  const { name, description, price, category_id, quantity, user_id } = req.body;
 
   try {
     const image_url = await handleUpload(req, name); // Pass item name to handleUpload function
-
-    console.log(image_url);
 
     const query = 'INSERT INTO Item (name, description, price, image_url, category_id, quantity) VALUES ($1, $2, $3, $4, $5, $6) RETURNING item_id';
     const values = [name, description, price, image_url, category_id, quantity];
@@ -74,8 +72,14 @@ const createItem = async (req, res) => {
       price,
       image_url,
       category_id,
-      quantity
+      quantity,
+      user_id
     };
+
+    // Insert the user_id and item_id into UserItem table
+    const userItemQuery = 'INSERT INTO UserItem (user_id, item_id) VALUES ($1, $2)';
+    const userItemValues = [user_id, newItem.item_id];
+    await db.pool.query(userItemQuery, userItemValues);
 
     res.status(201).json(newItem);
   } catch (error) {
@@ -87,12 +91,17 @@ const createItem = async (req, res) => {
 // Update item by ID
 const updateItemById = async (req, res) => {
   const { id } = req.params;
-  const { name, description, price, category_id, quantity } = req.body;
+  const { name, description, price, category_id, quantity, user_id } = req.body;
 
   try {
     const query = 'UPDATE Item SET name = $1, description = $2, price = $3, image_url = $4, category_id = $5, quantity = $6 WHERE item_id = $7';
     const values = [name, description, price, image_url, category_id, quantity, id];
     await db.pool.query(query, values);
+
+    // Update the user_id in UserItem table
+    const userItemQuery = 'UPDATE UserItem SET user_id = $1 WHERE item_id = $2';
+    const userItemValues = [user_id, id];
+    await db.pool.query(userItemQuery, userItemValues);
 
     res.status(200).json({ message: 'Item updated successfully' });
   } catch (error) {

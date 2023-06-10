@@ -30,7 +30,9 @@ const LoginPage = () => {
       role: isAdmin ? 'admin' : 'user'
     })
     .then((response) => {
+      sessionStorage.setItem('user_id', response.data.user_id);
       console.log(response);
+      console.log(response.data.user_id);
       window.location.href = '/Home';
     }, (error) => {
       console.log(error);
