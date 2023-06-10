@@ -30,7 +30,7 @@ const CategoryPage = () => {
 
   const fetchFilteredItems = async (category) => {
     try {
-      const response = await fetch(`http://localhost:9000/items/category/:name?=${category}`);
+      const response = await fetch(`http://localhost:9000/items/category/${category}`);
       const data = await response.json();
       setFilteredItems(data);
     } catch (error) {
@@ -39,8 +39,9 @@ const CategoryPage = () => {
   };
 
   const handleItemClick = (itemId) => {
+    console.log(itemId)
     sessionStorage.setItem('itemId', itemId);
-    
+    window.location.href = `/ItemDetails/${itemId}`;
     // Handle item click here, e.g., navigate to item details page programmatically
     console.log(`Item clicked: ${itemId}`);
   };

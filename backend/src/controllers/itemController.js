@@ -216,8 +216,10 @@ const getAllCategories = async (req, res) => {
 };
 
 const getItemsByCategory = async (req, res) => {
-  const { category_name } = req.body;
-  console.log(req.body);
+  const { name } = req.params;
+  console.log(req.params);
+  console.log(name)
+  const category_name = name;
 
   try {
     const query = `
