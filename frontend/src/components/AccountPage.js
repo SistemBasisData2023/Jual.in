@@ -29,18 +29,27 @@ const AccountPage = () => {
     }
   };
 
-  const handleChangePassword = () => {
-    // Logic to handle password change
+  const handleChangePassword = async () => {
     if (newPassword !== confirmPassword) {
       setErrorMessage('Passwords do not match.');
     } else {
-      // Example: Fetch API or perform any necessary operations
-      setPassword(newPassword);
-      setNewPassword('');
-      setConfirmPassword('');
-      setErrorMessage('');
+      try {
+        const response = await axios.patch(`http://localhost:9000/users/changePassword/${sessionStorage.getItem("user_id")}`, {
+          currentPassword: password,
+          newPassword: newPassword,
+        });
+        console.log(response.data); // Optional: Handle the response if needed
+        setPassword('');
+        setNewPassword('');
+        setConfirmPassword('');
+        setErrorMessage('');
+      } catch (error) {
+        console.log(error);
+        setErrorMessage('Failed to change password');
+      }
     }
   };
+  
   
   return (
     <div>
