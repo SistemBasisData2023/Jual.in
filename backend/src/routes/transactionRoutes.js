@@ -11,4 +11,8 @@ router.get('/:id', transactionController.getTransactionById);
 // Create a new transaction
 router.post('/create', transactionController.createTransaction);
 
+router.get('/data/:id', transactionController.getTransactionData);
+
+router.get('/:id/cardId', transactionController.getAllCartItemsById);
+
 module.exports = router;

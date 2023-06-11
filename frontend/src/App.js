@@ -41,6 +41,7 @@ export default function App() {
       description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
     },
   ];
+
   const item = {
     id: 1,
     name: 'Example Item',
@@ -74,7 +75,7 @@ export default function App() {
         <Route path="/ItemDetails/:id" element={<ItemDetails item={item} />} />
         <Route path="/" element={<LoginPage />} />
         <Route path="/AddItem" element={<AddItem />} />
-        <Route path="/Payment" element={<Payment />} />
+        <Route path="/Payment/:transaction_id" element={<Payment />} />
       </Routes>
     </Router>
   );

@@ -70,6 +70,7 @@ const Checkout = () => {
   };
 
   const handleProceedToPayment = async () => {
+    
     try {
       console.log(cartItems);
       const transactionData = {
@@ -80,7 +81,12 @@ const Checkout = () => {
           quantity: item.quantity,
         })),
       };
-      await axios.post('http://localhost:9000/transactions/create', transactionData);
+      const {data} = await axios.post('http://localhost:9000/transactions/create', transactionData);
+      console.log(data);
+      console.log(transactionData.id);
+      sessionStorage.setItem('transactionId', data.transaction_id);
+      window.location.href = `/Payment/${data.transaction_id}`;
+
       // Optionally, you can perform additional actions after the transaction is created
       // For example, clearing the cart or navigating to a success page
     } catch (error) {
