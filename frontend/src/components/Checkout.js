@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import Navbar from './Navbar';
 
 const Checkout = () => {
   const [cartItems, setCartItems] = useState([]);
@@ -42,6 +41,7 @@ const Checkout = () => {
     calculateTotalPrice();
   }, [cartItems]);
 
+
   const handleIncreaseQuantity = (itemId) => {
     setCartItems((prevItems) =>
       prevItems.map((item) =>
@@ -54,6 +54,7 @@ const Checkout = () => {
       )
     );
   };
+
 
   const handleDecreaseQuantity = (itemId) => {
     setCartItems((prevItems) =>
