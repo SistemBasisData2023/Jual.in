@@ -29,5 +29,7 @@ router.get('/allusers', usersController.getAllUsers);
 // Perform a transaction between user and admin
 router.post('/transactions/:id', usersController.performTransaction);
 
+router.patch('/changePassword/:id', usersController.changePassword);
+
 module.exports = router;
 

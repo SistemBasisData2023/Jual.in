@@ -222,6 +222,45 @@ const performTransaction = async (req, res) => {
   }
 };
 
+// Change user's password
+const changePassword = async (req, res) => {
+  const { id } = req.params;
+  const { currentPassword, newPassword } = req.body;
+
+  try {
+    // Check if the user exists
+    const checkUserQuery = 'SELECT * FROM Users WHERE user_id = $1';
+    const checkUserResult = await db.pool.query(checkUserQuery, [id]);
+
+    if (checkUserResult.rows.length === 0) {
+      res.status(404).json({ error: 'User not found' });
+      return;
+    }
+
+    // Verify current password
+    const user = checkUserResult.rows[0];
+    const isPasswordValid = await bcrypt.compare(currentPassword, user.password_hash);
+
+    if (!isPasswordValid) {
+      res.status(400).json({ error: 'Invalid current password' });
+      return;
+    }
+
+    // Hash the new password
+    const saltRounds = 10;
+    const newPasswordHash = await bcrypt.hash(newPassword, saltRounds);
+
+    // Update the user's password
+    const updatePasswordQuery = 'UPDATE Users SET password_hash = $1 WHERE user_id = $2';
+    await db.pool.query(updatePasswordQuery, [newPasswordHash, id]);
+
+    res.status(200).json({ message: 'Password changed successfully' });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: 'Failed to change password' });
+  }
+};
+
 module.exports = {
   registerUser,
   loginUser,
@@ -230,5 +269,6 @@ module.exports = {
   deleteUserById,
   topUpBalance,
   performTransaction,
-  getAllUsers
+  getAllUsers,
+  changePassword
 };

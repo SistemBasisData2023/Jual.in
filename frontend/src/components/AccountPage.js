@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
-import Navbar from './Navbar';
+
+import axios from 'axios';
+
 
 const AccountPage = () => {
   const [balance, setBalance] = useState(0);
@@ -9,11 +11,22 @@ const AccountPage = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
-  const handleTopUp = () => {
-    // Logic to handle balance top-up
-    // Example: Fetch API or perform any necessary operations
-    setBalance(balance + topUpAmount);
-    setTopUpAmount(0); // Reset top-up amount after balance update
+
+  
+
+
+  const handleTopUp = async () => {
+    try {
+      const response = await axios.patch(`http://localhost:9000/users/topup/${sessionStorage.getItem("user_id")}`, {
+        amount: topUpAmount,
+      });
+      const updatedBalance = response.data.balance;
+      setBalance(updatedBalance);
+      setTopUpAmount(0);
+    } catch (error) {
+      console.log(error);
+      setErrorMessage('Failed to top up balance');
+    }
   };
 
   const handleChangePassword = () => {
@@ -37,7 +50,7 @@ const AccountPage = () => {
 
         <div className="bg-white rounded-lg shadow-md p-6 mb-6">
           <h2 className="text-xl font-bold mb-4">Balance</h2>
-          <p className="text-gray-500">Current Balance: {balance}</p>
+          {/* <p className="text-gray-500">Current Balance: {balance}</p> */}
           <div className="mb-4">
             <label htmlFor="top-up-amount" className="block text-gray-700 font-bold mb-2">
               Top-up Amount
