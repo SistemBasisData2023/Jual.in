@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faStar } from '@fortawesome/free-solid-svg-icons';
 import Navbar from './Navbar';
 
 const HistoryPage = () => {
@@ -25,6 +27,7 @@ const HistoryPage = () => {
   ];
 
   const [submittedReviews, setSubmittedReviews] = useState([]);
+  const [selectedRatings, setSelectedRatings] = useState({});
 
   const handleReviewSubmit = (orderId, itemId, review) => {
     // Simulating submission by adding the review to the submittedReviews state
@@ -32,14 +35,25 @@ const HistoryPage = () => {
       orderId,
       itemId,
       review,
+      rating: selectedRatings[itemId],
     };
     setSubmittedReviews([...submittedReviews, submittedReview]);
+    setSelectedRatings((prevSelectedRatings) => ({
+      ...prevSelectedRatings,
+      [itemId]: 0,
+    }));
     console.log(`Submit review for Order ID ${orderId}, Item ID ${itemId}: ${review}`);
+  };
+
+  const handleStarClick = (itemId, rating) => {
+    setSelectedRatings((prevSelectedRatings) => ({
+      ...prevSelectedRatings,
+      [itemId]: rating,
+    }));
   };
 
   return (
     <div>
-
       <div className="container mx-auto my-8">
         <h1 className="text-3xl font-bold mb-4">Review Products</h1>
 
@@ -51,6 +65,7 @@ const HistoryPage = () => {
               const isReviewSubmitted = submittedReviews.some(
                 (review) => review.orderId === order.id && review.itemId === item.name
               );
+              const selectedRating = selectedRatings[item.name] || 0;
 
               return (
                 <div key={item.name} className="flex items-center mb-6">
@@ -80,6 +95,18 @@ const HistoryPage = () => {
                             placeholder="Write your review..."
                             required
                           ></textarea>
+                          <div className="flex items-center ml-4">
+                            {[1, 2, 3, 4, 5].map((rating) => (
+                              <FontAwesomeIcon
+                                key={rating}
+                                icon={faStar}
+                                className={`h-6 w-6 fill-current ${
+                                  rating <= selectedRating ? 'text-yellow-500' : 'text-gray-400'
+                                } cursor-pointer`}
+                                onClick={() => handleStarClick(item.name, rating)}
+                              />
+                            ))}
+                          </div>
                           <button
                             type="submit"
                             className="bg-blue-500 text-white font-semibold py-2 px-4 rounded ml-4"
