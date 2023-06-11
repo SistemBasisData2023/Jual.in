@@ -3,15 +3,28 @@ import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faStar } from '@fortawesome/free-solid-svg-icons';
 import Navbar from './Navbar';
+import { useNavigate } from 'react-router-dom';
 
 const CategoryPage = () => {
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('');
   const [filteredItems, setFilteredItems] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchCategories();
   }, []);
+
+  useEffect(() => {
+    const checkCookiesAvailability = () => {
+      const areCookiesAvailable = document.cookie.length > 0;
+      if (!areCookiesAvailable ) {
+        navigate('/');
+      }
+    };
+
+    checkCookiesAvailability();
+  }, [navigate]);
 
   const fetchCategories = async () => {
     try {

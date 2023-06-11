@@ -34,7 +34,7 @@ const Home = () => {
 
     checkCookiesAvailability();
   }, [navigate]);
-  
+
   const navigateToItemDetails = (itemId) => {
     sessionStorage.setItem('itemId', itemId);
     window.location.href = `/ItemDetails/${itemId}`;
@@ -173,7 +173,7 @@ const Home = () => {
             placeholder="Search items..."
             value={searchTerm}
             onChange={handleSearch}
-            className="mb-4 px-2 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="mb-4 px-2 py-1 border border-gray-500 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-300"
           />
 
           {renderItems()}

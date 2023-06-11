@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const Checkout = () => {
   const [cartItems, setCartItems] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
   const cartData = JSON.parse(sessionStorage.getItem('cartData') || '[]');
-
+  const navigate = useNavigate();
+  
   useEffect(() => {
     const fetchItemDetails = async () => {
       try {
@@ -28,6 +30,17 @@ const Checkout = () => {
   }, []);
 
   useEffect(() => {
+    const checkCookiesAvailability = () => {
+      const areCookiesAvailable = document.cookie.length > 0;
+      if (!areCookiesAvailable ) {
+        navigate('/');
+      }
+    };
+
+    checkCookiesAvailability();
+  }, [navigate]);
+
+  useEffect(() => {
     const calculateTotalPrice = async () => {
       const total = cartItems.reduce((accumulator, item) => {
         const price = String(item.price || '0');
@@ -40,6 +53,7 @@ const Checkout = () => {
 
     calculateTotalPrice();
   }, [cartItems]);
+
 
 
   const handleIncreaseQuantity = (itemId) => {

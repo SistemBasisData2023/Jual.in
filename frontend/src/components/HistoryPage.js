@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faStar } from '@fortawesome/free-solid-svg-icons';
 import Navbar from './Navbar';
+import { useNavigate } from 'react-router-dom';
 
 const HistoryPage = () => {
   const orderHistory = [
@@ -25,9 +26,20 @@ const HistoryPage = () => {
     },
     // Add more transactions here
   ];
-
+  const navigate = useNavigate();
   const [submittedReviews, setSubmittedReviews] = useState([]);
   const [selectedRatings, setSelectedRatings] = useState({});
+
+  useEffect(() => {
+    const checkCookiesAvailability = () => {
+      const areCookiesAvailable = document.cookie.length > 0;
+      if (!areCookiesAvailable ) {
+        navigate('/');
+      }
+    };
+
+    checkCookiesAvailability();
+  }, [navigate]);
 
   const handleReviewSubmit = (orderId, itemId, review) => {
     // Simulating submission by adding the review to the submittedReviews state
@@ -44,6 +56,7 @@ const HistoryPage = () => {
     }));
     console.log(`Submit review for Order ID ${orderId}, Item ID ${itemId}: ${review}`);
   };
+
 
   const handleStarClick = (itemId, rating) => {
     setSelectedRatings((prevSelectedRatings) => ({
