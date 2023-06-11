@@ -20,6 +20,8 @@ const LoginPage = () => {
       .then((response) => {
         sessionStorage.setItem('user_id', response.data.user_id);
         sessionStorage.setItem('role', response.data.role);
+        document.cookie = `user_id=${response.data.user_id}; path=/`;        
+        document.cookie = `role=${response.data.role}; path=/`;
         console.log(response);
         console.log(response.data.user_id);
         window.location.href = '/Home';
