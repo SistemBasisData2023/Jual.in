@@ -33,22 +33,14 @@ const Checkout = () => {
       const total = cartItems.reduce((accumulator, item) => {
         const price = String(item.price || '0');
         const numericPrice = parseFloat(price.replace(/[^0-9.-]+/g, ''));
-
-        
-        console.log("accumulator " + accumulator)
-        console.log("price " +price)
-        console.log("num price " +numericPrice)
-        console.log("quantity " +item.quantity)
         return accumulator + numericPrice * item.quantity;
-        
       }, 0);
-      console.log("total  " + total)
       setTotalPrice(total);
+      sessionStorage.setItem('totalPrice', total);
     };
-  
+
     calculateTotalPrice();
   }, [cartItems]);
-  
 
   const handleIncreaseQuantity = (itemId) => {
     setCartItems((prevItems) =>
@@ -62,7 +54,7 @@ const Checkout = () => {
       )
     );
   };
-  
+
   const handleDecreaseQuantity = (itemId) => {
     setCartItems((prevItems) =>
       prevItems.map((item) =>
@@ -75,10 +67,29 @@ const Checkout = () => {
       )
     );
   };
-  
+
+  const handleProceedToPayment = async () => {
+    try {
+      console.log(cartItems);
+      const transactionData = {
+        user_id: sessionStorage.getItem('user_id'), // Replace with actual user ID
+        total_amount: totalPrice,
+        items: cartItems.map((item) => ({
+          item_id: item.item_id,
+          quantity: item.quantity,
+        })),
+      };
+      await axios.post('http://localhost:9000/transactions/create', transactionData);
+      // Optionally, you can perform additional actions after the transaction is created
+      // For example, clearing the cart or navigating to a success page
+    } catch (error) {
+      console.error('Error creating transaction:', error);
+    }
+  };
 
   return (
     <div>
+      
       <div className="container mx-auto my-8">
         <h1 className="text-3xl font-bold mb-4">Checkout</h1>
 
@@ -116,7 +127,10 @@ const Checkout = () => {
             <p className="text-lg font-bold">Rp {totalPrice.toLocaleString()}</p>
           </div>
 
-          <button className="bg-blue-500 text-white font-bold py-2 px-4 rounded mt-6">
+          <button
+            className="bg-blue-500 text-white font-bold py-2 px-4 rounded mt-6"
+            onClick={handleProceedToPayment}
+          >
             Proceed to Payment
           </button>
         </div>

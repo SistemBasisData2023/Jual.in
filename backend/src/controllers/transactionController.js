@@ -35,22 +35,40 @@ const getTransactionById = async (req, res) => {
   }
 };
 
+
 // Create a new transaction
 const createTransaction = async (req, res) => {
-  const { user_id, item_id, price, quantity, total_amount } = req.body;
-
+  const { user_id, total_amount, items } = req.body;
+  console.log(req.body);
   try {
-    const query = 'INSERT INTO Transaction (user_id, item_id, price, quantity, total_amount) VALUES ($1, $2, $3, $4, $5) RETURNING *';
-    const values = [user_id, item_id, price, quantity, total_amount];
-    const result = await db.pool.query(query, values);
+    // Insert transaction and retrieve transaction_id
+    const transactionQuery = 'INSERT INTO Transaction (user_id, total_amount) VALUES ($1, $2) RETURNING transaction_id';
+    const transactionValues = [user_id, total_amount];
+    console.log(transactionValues);
+    const transactionResult = await db.pool.query(transactionQuery, transactionValues);
+    const transactionId = transactionResult.rows[0].transaction_id;
 
-    const newTransaction = result.rows[0];
-    res.status(201).json(newTransaction);
+    // Insert items into Cart table with the transaction_id
+    const cartQuery = 'INSERT INTO Cart (transaction_id, item_id, quantity) VALUES ($1, $2, $3)';
+    for (const item of items) {
+      const cartValues = [transactionId, item.item_id, item.quantity];
+      console.log(cartValues);
+      await db.pool.query(cartQuery, cartValues);
+    }
+
+    res.status(201).json({ transaction_id: transactionId });
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: 'Failed to create transaction' });
   }
 };
+
+
+
+module.exports = {
+  createTransaction,
+};
+
 
 module.exports = {
   getAllTransactions,

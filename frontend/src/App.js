@@ -53,7 +53,7 @@ export default function App() {
   function NavbarWrapper() {
     const location = useLocation();
   
-    const showNavbar = !['/LoginPage', '/RegisterPage'].includes(location.pathname);
+    const showNavbar = !['/LoginPage', '/RegisterPage', "/"].includes(location.pathname);
   
     return showNavbar ? <Navbar username="JohnDoe" email="johndoe@example.com" balance={100000} /> : null;
   }

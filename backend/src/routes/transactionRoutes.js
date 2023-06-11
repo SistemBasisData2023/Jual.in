@@ -9,6 +9,6 @@ router.get('/', transactionController.getAllTransactions);
 router.get('/:id', transactionController.getTransactionById);
 
 // Create a new transaction
-router.post('/', transactionController.createTransaction);
+router.post('/create', transactionController.createTransaction);
 
 module.exports = router;
