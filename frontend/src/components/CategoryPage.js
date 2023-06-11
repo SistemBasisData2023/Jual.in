@@ -15,16 +15,16 @@ const CategoryPage = () => {
     fetchCategories();
   }, []);
 
-  useEffect(() => {
-    const checkCookiesAvailability = () => {
-      const areCookiesAvailable = document.cookie.length > 0;
-      if (!areCookiesAvailable ) {
-        navigate('/');
-      }
-    };
+  // useEffect(() => {
+  //   const checkCookiesAvailability = () => {
+  //     const areCookiesAvailable = document.cookie.length > 0;
+  //     if (!areCookiesAvailable ) {
+  //       navigate('/');
+  //     }
+  //   };
 
-    checkCookiesAvailability();
-  }, [navigate]);
+  //   checkCookiesAvailability();
+  // }, [navigate]);
 
   const fetchCategories = async () => {
     try {

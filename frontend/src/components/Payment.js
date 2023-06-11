@@ -50,6 +50,7 @@ const Payment = () => {
     axios.post(`http://localhost:9000/users/transactions/${userData.user_id}`, { totalPrice })
       .then((response) => {
         console.log(response.data.message);
+        window.location.href = '/History';
         // Process the response as needed
       })
       .catch((error) => {

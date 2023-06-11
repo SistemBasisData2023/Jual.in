@@ -3,7 +3,10 @@ const dotenv = require('dotenv');
 
 dotenv.config();
 
-// Create a new pool instance
+/**
+ * The database connection pool.
+ * @type {Pool}
+ */
 const pool = new Pool({
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
@@ -16,6 +19,11 @@ const pool = new Pool({
   },
 });
 
+/**
+ * Tests the database connection.
+ * Logs a success message if the connection is successful, otherwise logs an error message.
+ * @returns {Promise<void>}
+ */
 async function testConnection() {
   try {
     const client = await pool.connect();

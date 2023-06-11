@@ -122,7 +122,7 @@ const Navbar = () => {
               }`}
               onClick={handleCategoryClick}
             >
-              <a href="/Categories">Category</a>
+              <a href="/Category">Category</a>
             </li>
             <li
               className={`text-white font-bold text-lg ${
@@ -131,7 +131,7 @@ const Navbar = () => {
               onClick={handleCheckOutClick}
             >
               
-              <a href="/Check-out">Check-out</a>
+              <a href="/Checkout">Check-out</a>
             </li>
             <li
               className={`text-white font-bold text-lg ${
