@@ -10,6 +10,7 @@ import RegisterPage from './components/RegisterPage';
 import CategoryPage from './components/CategoryPage';
 import ItemDetails from './components/ItemDetails';
 import AddItem from './components/AddItem';
+import Payment from './components/Payment';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 
 
@@ -73,6 +74,7 @@ export default function App() {
         <Route path="/ItemDetails/:id" element={<ItemDetails item={item} />} />
         <Route path="/" element={<LoginPage />} />
         <Route path="/AddItem" element={<AddItem />} />
+        <Route path="/Payment" element={<Payment />} />
       </Routes>
     </Router>
   );

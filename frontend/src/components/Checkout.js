@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import Navbar from './Navbar';
 
 const Checkout = () => {
   const [cartItems, setCartItems] = useState([]);
@@ -48,7 +47,6 @@ const Checkout = () => {
   
     calculateTotalPrice();
   }, [cartItems]);
-  
 
   const handleIncreaseQuantity = (itemId) => {
     setCartItems((prevItems) =>
@@ -62,7 +60,7 @@ const Checkout = () => {
       )
     );
   };
-  
+
   const handleDecreaseQuantity = (itemId) => {
     setCartItems((prevItems) =>
       prevItems.map((item) =>
@@ -75,7 +73,11 @@ const Checkout = () => {
       )
     );
   };
-  
+
+  const handleProceedToPayment = () => {
+    const totalPriceQueryParam = encodeURIComponent(totalPrice);
+    window.location.href = `/payment?totalPrice=${totalPriceQueryParam}`;
+  };
 
   return (
     <div>
@@ -116,7 +118,10 @@ const Checkout = () => {
             <p className="text-lg font-bold">Rp {totalPrice.toLocaleString()}</p>
           </div>
 
-          <button className="bg-blue-500 text-white font-bold py-2 px-4 rounded mt-6">
+          <button
+            className="bg-blue-500 text-white font-bold py-2 px-4 rounded mt-6"
+            onClick={handleProceedToPayment}
+          >
             Proceed to Payment
           </button>
         </div>
