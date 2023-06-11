@@ -17,6 +17,7 @@ import axios from 'axios';
       })
       .then((response) => {
         sessionStorage.setItem('user_id', response.data.user_id);
+        sessionStorage.setItem('role', response.data.role)
         console.log(response);
         console.log(response.data.user_id);
         window.location.href = '/Home';

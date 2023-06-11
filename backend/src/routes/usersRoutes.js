@@ -9,7 +9,7 @@ router.post('/register', usersController.registerUser);
 router.post('/login', usersController.loginUser);
 
 // Get user by ID
-router.get('/:id/singleId', usersController.getUserById);
+router.get('/singleId/:id', usersController.getUserById);
 
 // Update user by ID
 router.put('/:id', usersController.updateUserById);
@@ -18,14 +18,16 @@ router.put('/:id', usersController.updateUserById);
 router.delete('/:id', usersController.deleteUserById);
 
 // Top up user's balance
-router.patch('/:id/topup', usersController.topUpBalance);
+router.patch('/topup/:id', usersController.topUpBalance);
 
-// Perform a transaction between user and admin
-router.post('/transactions', usersController.performTransaction);
+// // Perform a transaction between user and admin
+// router.post('/transactions', usersController.performTransaction);
 
 // Get All User
 router.get('/allusers', usersController.getAllUsers);
 
+// Perform a transaction between user and admin
+router.post('/transactions/:id', usersController.performTransaction);
 
 module.exports = router;
 

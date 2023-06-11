@@ -8,8 +8,22 @@ const Payment = () => {
   const searchParams = new URLSearchParams(window.location.search);
   const totalPrice = sessionStorage.getItem('totalPrice') || searchParams.get('totalPrice');
   const [transactionData, setTransactionData] = useState('');
+  const [userData, setUserData] = useState(null);
+
+  const fetchUserData = () => {
+    // Make an API request to fetch the user data from the backend
+    axios.get(`http://localhost:9000/users/singleId/${sessionStorage.getItem("user_id")}`)
+      .then((response) => {
+        setUserData(response.data);
+        console.log(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
   useEffect(() => {
+    fetchUserData();
     const fetchTransactionData = async () => {
       try {
         const response = await axios.get(`http://localhost:9000/transactions/data/${sessionStorage.getItem('transactionId')}`);
@@ -24,14 +38,24 @@ const Payment = () => {
   }, []);
 
   const handlePayment = () => {
-    if (totalPrice > accountBalance) {
+    console.log(totalPrice);
+    console.log(userData.balance);
+    if (totalPrice > userData.balance) {
       console.log('Insufficient balance. Payment cannot be continued.');
       return;
     }
 
-    // Perform payment processing logic here
-    // You can use the cartItems and accountBalance variables for processing the payment
-    console.log('Payment processed successfully!');
+    // // Make a POST request to perform the payment transaction
+    // const userId = sessionStorage.getItem('user_id');
+    axios.post(`http://localhost:9000/users/transactions/${userData.user_id}`, { totalPrice })
+      .then((response) => {
+        console.log(response.data.message);
+        // Process the response as needed
+      })
+      .catch((error) => {
+        console.log(error);
+        // Handle the error as needed
+      });
   };
 
   return (
@@ -42,9 +66,17 @@ const Payment = () => {
         <div className="bg-white rounded-lg shadow-md p-6">
           <h2 className="text-xl font-bold mb-4">Payment Details</h2>
 
-          <div className="mb-6">
+          {/* <div className="mb-6">
             <p className="font-bold mb-2">Account Balance: {accountBalance}</p>
-          </div>
+          </div> */}
+
+          {userData && (
+            <div className="text-grey">
+              <div className="mb-6">
+                <p className="font-bold mb-2">Account Balance: Rp{userData.balance}</p>
+              </div>
+            </div>
+          )}
 
           {transactionData.length > 0 && (
             <div>
@@ -59,6 +91,7 @@ const Payment = () => {
                     <p className="text-gray-700">Price: {transaction.items.price}</p>
                     
                     <p className="text-gray-700">Date/Time: {transaction.timestamp}</p>
+                    <p className="text-gray-700">Current Date/Time: {new Date().toLocaleString()}</p>
                     <div>
                       {/* <h3 className="text-lg font-bold mt-4">Items:</h3> */}
                     </div>
@@ -67,6 +100,8 @@ const Payment = () => {
               ))}
             </div>
           )}
+
+          
 
 
           {/* <div className="mb-6">

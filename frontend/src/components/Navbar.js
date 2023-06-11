@@ -15,7 +15,7 @@ const Navbar = () => {
 
   const fetchUserData = () => {
     // Make an API request to fetch the user data from the backend
-    axios.get('http://localhost:9000/users/profile')
+    axios.get(`http://localhost:9000/users/singleId/${sessionStorage.getItem("user_id")}`)
       .then((response) => {
         setUserData(response.data);
       })
@@ -81,7 +81,7 @@ const Navbar = () => {
               <Link to="/Account">
                 <img
                   className="w-12 h-12 rounded-full"
-                  src={userData.profilePicture}
+                  src={'https://static.vecteezy.com/system/resources/thumbnails/002/318/271/small/user-profile-icon-free-vector.jpg'}
                   alt="Profile"
                 />
               </Link>

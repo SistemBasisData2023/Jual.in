@@ -165,55 +165,7 @@ const topUpBalance = async (req, res) => {
 };
 
 
-// Perform a transaction between user and admin
-const performTransaction = async (req, res) => {
-  const { userId, itemId, quantity } = req.body;
 
-  try {
-    // Get the item's price
-    const getItemPriceQuery = 'SELECT price FROM Item WHERE item_id = $1';
-    const getItemPriceResult = await db.pool.query(getItemPriceQuery, [itemId]);
-
-    if (getItemPriceResult.rows.length === 0) {
-      res.status(404).json({ error: 'Item not found' });
-      return;
-    }
-
-    const itemPrice = getItemPriceResult.rows[0].price;
-    const totalAmount = itemPrice * quantity;
-
-    // Check if the user has sufficient balance
-    const checkUserBalanceQuery = 'SELECT balance FROM Users WHERE user_id = $1';
-    const checkUserBalanceResult = await db.pool.query(checkUserBalanceQuery, [userId]);
-
-    if (checkUserBalanceResult.rows.length === 0) {
-      res.status(404).json({ error: 'User not found' });
-      return;
-    }
-
-    const userBalance = checkUserBalanceResult.rows[0].balance;
-
-    if (userBalance < totalAmount) {
-      res.status(400).json({ error: 'Insufficient balance' });
-      return;
-    }
-
-    // Deduct the amount from the user's balance
-    const updatedUserBalance = userBalance - totalAmount;
-    const updateUserBalanceQuery = 'UPDATE Users SET balance = $1 WHERE user_id = $2';
-    await db.pool.query(updateUserBalanceQuery, [updatedUserBalance, userId]);
-
-    // Perform the transaction
-    const createTransactionQuery = 'INSERT INTO Transaction (user_id, item_id, price, quantity, total_amount) VALUES ($1, $2, $3, $4, $5)';
-    const transactionValues = [userId, itemId, itemPrice, quantity, totalAmount];
-    await db.pool.query(createTransactionQuery, transactionValues);
-
-    res.status(200).json({ message: 'Transaction completed successfully' });
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ error: 'Failed to perform transaction' });
-  }
-};
 
 // Get all users
 const getAllUsers = async (req, res) => {
@@ -227,6 +179,46 @@ const getAllUsers = async (req, res) => {
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: error });
+  }
+};
+
+// Perform payment transaction
+const performTransaction = async (req, res) => {
+  const { id } = req.params;
+  const { totalPrice } = req.body;
+  console.log(req.params);
+  console.log(id);
+  console.log('halo bang');
+  console.log(req.body);
+  console.log(totalPrice);
+
+  try {
+    // Get the user's current balance
+    const getUserBalanceQuery = 'SELECT balance FROM Users WHERE user_id = $1';
+    const getUserBalanceResult = await db.pool.query(getUserBalanceQuery, [id]);
+
+    if (getUserBalanceResult.rows.length === 0) {
+      res.status(404).json({ error: 'User not found' });
+      return;
+    }
+
+    const currentBalance = getUserBalanceResult.rows[0].balance;
+
+    if (totalPrice > currentBalance) {
+      res.status(400).json({ error: 'Insufficient balance. Payment cannot be continued.' });
+      return;
+    }
+
+    const updatedBalance = currentBalance - totalPrice;
+
+    // Update the user's balance
+    const updateBalanceQuery = 'UPDATE Users SET balance = $1 WHERE user_id = $2';
+    await db.pool.query(updateBalanceQuery, [updatedBalance, id]);
+
+    res.status(200).json({ message: 'Payment processed successfully!', balance: updatedBalance });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: 'Failed to process payment' });
   }
 };
 
