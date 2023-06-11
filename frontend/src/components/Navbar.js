@@ -141,6 +141,35 @@ const Navbar = () => {
               <a href="/History">History</a>
             </li>
           </ul>
+        </div>
+        <div className="flex items-center space-x-4">
+          {userData && (
+            <div className="flex items-center" onClick={handleProfileClick}>
+              <a href="/Account">
+                <img
+                  className="w-10 h-10 rounded-full"
+                  src="https://static.vecteezy.com/system/resources/thumbnails/002/318/271/small/user-profile-icon-free-vector.jpg"
+                  alt="Profile"
+                />
+              </a>
+            </div>
+          )}
+          {userData && (
+            <div className="text-white text-sm">
+              <span className="font-bold">{userData.username}</span>
+              <br />
+              <span className="font-bold">{userData.email}</span>
+              <br />
+              <span className="font-bold">Rp {userData.formattedBalance}</span>
+            </div>
+          )}
+          <button
+            className="bg-red-500 text-white font-bold py-2 px-4 rounded"
+            onClick={handleLogout}
+          >
+            Log out
+          </button>
+        </div>
           <div className="flex items-center space-x-4 ml-4">
             {userData && (
               <div className="flex items-center" onClick={handleProfileClick}>
