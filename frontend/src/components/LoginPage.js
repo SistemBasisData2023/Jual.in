@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
-  const LoginPage = () => {
+const LoginPage = () => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -17,13 +19,14 @@ import axios from 'axios';
       })
       .then((response) => {
         sessionStorage.setItem('user_id', response.data.user_id);
-        sessionStorage.setItem('role', response.data.role)
+        sessionStorage.setItem('role', response.data.role);
         console.log(response);
         console.log(response.data.user_id);
         window.location.href = '/Home';
       })
       .catch((error) => {
         console.log(error.message);
+        toast.error('Login failed. Please check your credentials.');
       });
   };
 
@@ -36,12 +39,12 @@ import axios from 'axios';
   };
 
   const handleLogoClick = () => {
-    // Handle logo click logic
     console.log('Logo clicked!');
   };
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
+      <ToastContainer />
       <div className="w-full max-w-md">
         <div className="logo-container flex justify-center mb-4">
           <div className="logo-text" onClick={handleLogoClick}>
@@ -100,10 +103,7 @@ import axios from 'axios';
         </form>
         <div className="text-center">
           <p className="text-sm text-gray-600 mb-2">Don't have an account?</p>
-          <button
-            className="text-blue-500 hover:text-blue-700 focus:outline-none"
-            onClick={handleRegister}
-          >
+          <button className="text-blue-500 hover:text-blue-700 focus:outline-none" onClick={handleRegister}>
             Register
           </button>
         </div>

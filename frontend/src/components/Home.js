@@ -5,6 +5,7 @@ import { faStar } from '@fortawesome/free-solid-svg-icons';
 
 const Home = () => {
   const [items, setItems] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
     const fetchItems = async () => {
@@ -33,6 +34,14 @@ const Home = () => {
     parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, '.');
     return parts.join('.');
   };
+
+  const handleSearch = (event) => {
+    setSearchTerm(event.target.value);
+  };
+
+  const filteredItems = items.filter((item) =>
+    item.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   const renderItems = () => {
     const itemsPerRow = 5;
@@ -87,8 +96,8 @@ const Home = () => {
 
     const rows = [];
 
-    for (let i = 0; i < items.length; i += itemsPerRow) {
-      const rowItems = items.slice(i, i + itemsPerRow);
+    for (let i = 0; i < filteredItems.length; i += itemsPerRow) {
+      const rowItems = filteredItems.slice(i, i + itemsPerRow);
 
       const row = (
         <div key={i} className="flex">
@@ -142,6 +151,16 @@ const Home = () => {
 
         <div className="bg-white rounded-lg shadow-md p-6 mb-6">
           <h2 className="text-xl font-bold mb-4">Display Items</h2>
+          
+          {/* Search bar */}
+          <input
+            type="text"
+            placeholder="Search items..."
+            value={searchTerm}
+            onChange={handleSearch}
+            className="mb-4 px-2 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+
           {renderItems()}
         </div>
 

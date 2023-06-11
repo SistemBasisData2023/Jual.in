@@ -39,11 +39,21 @@ const CategoryPage = () => {
   };
 
   const handleItemClick = (itemId) => {
-    console.log(itemId)
+    console.log(itemId);
     sessionStorage.setItem('itemId', itemId);
     window.location.href = `/ItemDetails/${itemId}`;
-    // Handle item click here, e.g., navigate to item details page programmatically
     console.log(`Item clicked: ${itemId}`);
+  };
+
+  const formatPrice = (price) => {
+    return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+  };
+
+  const itemPriceStyle = {
+    fontSize: '14px',
+    fontWeight: 'bold',
+    color: '#888',
+    marginBottom: '6px',
   };
 
   return (
@@ -59,13 +69,9 @@ const CategoryPage = () => {
                 key={category.category_id}
                 className={`mr-4 py-2 px-4 rounded-md ${
                   selectedCategory === category.name ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'
-            
                 }`}
-                
                 onClick={() => handleCategorySelection(category.name)}
-                
               >
-              
                 {category.name}
               </button>
             ))}
@@ -77,40 +83,36 @@ const CategoryPage = () => {
             <h2 className="text-xl font-bold mb-4">Display Items - {selectedCategory}</h2>
             {filteredItems.length > 0 ? (
               <ul>
-                {filteredItems.length > 0 ? (
-                <ul>
-                  {filteredItems.map((item) => (
-                    <li key={item.item_id} className="mb-6">
-                      <div className="flex items-center" onClick={() => handleItemClick(item.item_id)}>
-                        <div className="mr-4">
-                          <img className="w-32 h-32 rounded-md" src={item.image_url} alt="Product" />
-                        </div>
-                        <div>
-                          <h3 className="text-lg font-bold">{item.name}</h3>
-                          <p className="text-gray-500">Price: {item.price}</p>
-                          <div className="flex items-center mt-2">
-                            <span className="text-yellow-500 flex items-center">
-                              {Array.from({ length: 5 }).map((_, index) => (
-                                <FontAwesomeIcon
-                                  key={index}
-                                  icon={faStar}
-                                  className={`h-4 w-4 fill-current ${
-                                    index < Math.floor(item.average_rating) ? 'text-yellow-500' : 'text-gray-300'
-                                  }`}
-                                />
-                              ))}
-                              <span className="ml-2 text-gray-500">({item.average_rating})</span>
-                            </span>
-                          </div>
+                {filteredItems.map((item) => (
+                  <li key={item.item_id} className="mb-6">
+                    <div className="flex items-center" onClick={() => handleItemClick(item.item_id)}>
+                      <div className="mr-4">
+                        <img className="w-32 h-32 rounded-md" src={item.image_url} alt="Product" />
+                      </div>
+                      <div>
+                        <h3 className="text-lg font-bold">{item.name}</h3>
+                        <p className="text-gray-500" style={itemPriceStyle}>
+                          Price: {formatPrice(item.price)}
+                        </p>
+                        <div className="flex items-center mt-2">
+                          <span className="text-yellow-500 flex items-center">
+                            {Array.from({ length: 5 }).map((_, index) => (
+                              <FontAwesomeIcon
+                                key={index}
+                                icon={faStar}
+                                className={`h-4 w-4 fill-current ${
+                                  index < Math.floor(item.average_rating) ? 'text-yellow-500' : 'text-gray-300'
+                                }`}
+                              />
+                            ))}
+                            <span className="ml-2 text-gray-500">({item.average_rating})</span>
+                          </span>
                         </div>
                       </div>
-                      <p className="text-gray-500 mt-2">{item.description}</p>
-                    </li>
-                  ))}
-              </ul>
-            ) : (
-              <p>No items found in this category.</p>
-            )}
+                    </div>
+                    <p className="text-gray-500 mt-2">{item.description}</p>
+                  </li>
+                ))}
               </ul>
             ) : (
               <p>No items found in this category.</p>

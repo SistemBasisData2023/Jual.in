@@ -15,9 +15,11 @@ const Navbar = () => {
 
   const fetchUserData = () => {
     // Make an API request to fetch the user data from the backend
-    axios.get(`http://localhost:9000/users/singleId/${sessionStorage.getItem("user_id")}`)
+    axios
+      .get(`http://localhost:9000/users/singleId/${sessionStorage.getItem('user_id')}`)
       .then((response) => {
-        setUserData(response.data);
+        const formattedBalance = formatPriceWithDots(response.data.balance);
+        setUserData({ ...response.data, formattedBalance });
       })
       .catch((error) => {
         console.log(error);
@@ -44,6 +46,10 @@ const Navbar = () => {
     window.location.href = '/History';
   };
 
+  const formatPriceWithDots = (price) => {
+    return price.toLocaleString('en-ID');
+  };
+
   return (
     <nav className="bg-blue-500 py-4" style={{ backgroundColor: '#3D8FD1' }}>
       <div className="container flex justify-between items-center">
@@ -52,16 +58,28 @@ const Navbar = () => {
             <span className="font-bold text-5xl mr-4">JUALIN</span>
           </div>
           <ul className="flex space-x-8 ml-8">
-            <li className={`text-white font-bold text-lg ${activeItem === '/Home' ? 'underline' : ''}`} onClick={handleLogoClick}>
+            <li
+              className={`text-white font-bold text-lg ${activeItem === '/Home' ? 'underline' : ''}`}
+              onClick={handleLogoClick}
+            >
               <Link to="/Home">Home</Link>
             </li>
-            <li className={`text-white font-bold text-lg ${activeItem === '/Categories' ? 'underline' : ''}`} onClick={handleCategoryClick}>
+            <li
+              className={`text-white font-bold text-lg ${activeItem === '/Categories' ? 'underline' : ''}`}
+              onClick={handleCategoryClick}
+            >
               <Link to="/Categories">Category</Link>
             </li>
-            <li className={`text-white font-bold text-lg ${activeItem === '/Check-out' ? 'underline' : ''}`} onClick={handleCheckOutClick}>
+            <li
+              className={`text-white font-bold text-lg ${activeItem === '/Check-out' ? 'underline' : ''}`}
+              onClick={handleCheckOutClick}
+            >
               <Link to="/Check-out">Check-out</Link>
             </li>
-            <li className={`text-white font-bold text-lg ${activeItem === '/History' ? 'underline' : ''}`} onClick={handleHistoryClick}>
+            <li
+              className={`text-white font-bold text-lg ${activeItem === '/History' ? 'underline' : ''}`}
+              onClick={handleHistoryClick}
+            >
               <Link to="/History">History</Link>
             </li>
           </ul>
@@ -80,29 +98,20 @@ const Navbar = () => {
             <div className="flex items-center" onClick={handleProfileClick}>
               <Link to="/Account">
                 <img
-                  className="w-12 h-12 rounded-full"
-                  src={'https://static.vecteezy.com/system/resources/thumbnails/002/318/271/small/user-profile-icon-free-vector.jpg'}
+                  className="w-10 h-10 rounded-full"
+                  src="https://static.vecteezy.com/system/resources/thumbnails/002/318/271/small/user-profile-icon-free-vector.jpg"
                   alt="Profile"
                 />
               </Link>
             </div>
           )}
           {userData && (
-            <div className="text-white">
-              <span className="font-bold text-lg" style={{ fontFamily: 'Jost Bold' }}>
-                {userData.username}
-              </span>
-              <span className="text-gray-300 ml-2"></span>
+            <div className="text-white text-sm">
+              <span className="font-bold">{userData.username}</span>
               <br />
-              <span className="font-bold text-lg" style={{ fontFamily: 'Jost Bold' }}>
-                {userData.email}
-              </span>
-              <span className="text-gray-300 ml-2"></span>
+              <span className="font-bold">{userData.email}</span>
               <br />
-              <span className="font-bold text-lg" style={{ fontFamily: 'Jost Bold' }}>
-                Rp{userData.balance}
-              </span>
-              <span className="text-gray-300 ml-2"></span>
+              <span className="font-bold">Rp{userData.formattedBalance}</span>
             </div>
           )}
         </div>
