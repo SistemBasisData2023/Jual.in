@@ -22,6 +22,8 @@ const AccountPage = () => {
       });
       const updatedBalance = response.data.balance;
       setBalance(updatedBalance);
+      alert(`Successfully topped up balance by ${topUpAmount}`);
+      window.location.reload(); // Reload the page
       setTopUpAmount(0);
     } catch (error) {
       console.log(error);
