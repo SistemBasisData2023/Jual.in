@@ -36,9 +36,71 @@ Feature yang dimiliki:
 
 <p align="left"> <a href="https://firebase.google.com/" target="_blank" rel="noreferrer"> <img src="https://www.vectorlogo.zone/logos/firebase/firebase-icon.svg" alt="firebase" width="40" height="40"/> </a> <a href="https://git-scm.com/" target="_blank" rel="noreferrer"> <img src="https://www.vectorlogo.zone/logos/git-scm/git-scm-icon.svg" alt="git" width="40" height="40"/> </a> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript" target="_blank" rel="noreferrer"> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/javascript/javascript-original.svg" alt="javascript" width="40" height="40"/> </a> <a href="https://www.postgresql.org" target="_blank" rel="noreferrer"> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/postgresql/postgresql-original-wordmark.svg" alt="postgresql" width="40" height="40"/> </a> <a href="https://postman.com" target="_blank" rel="noreferrer"> <img src="https://www.vectorlogo.zone/logos/getpostman/getpostman-icon.svg" alt="postman" width="40" height="40"/> </a> <a href="https://reactjs.org/" target="_blank" rel="noreferrer"> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/react/react-original-wordmark.svg" alt="react" width="40" height="40"/> </a> <a href="https://tailwindcss.com/" target="_blank" rel="noreferrer"> <img src="https://www.vectorlogo.zone/logos/tailwindcss/tailwindcss-icon.svg" alt="tailwind" width="40" height="40"/> </a> </p>
 
+## Tables
 
+### 1.  ```Item```
+Atribut dari Item:
+```
+1. item_id
+2. name
+3. description
+4. price
+5. image_url
+6. category_id
+7.  quantity
+```
 
+### 2.  ```Users```
+This table is used to store doctor information when registering on the website.
+```
+1. user_id
+2. username
+3. password_hash
+4. email
+5. role
+6. balance
+```
 
+### 3.  ```Category```
+This table is used to store doctors and patients account information. 
+```
+1. category_id
+2. name
+```
+
+### 4.  ```UserItem```
+This table is used to store appointment information when patients make appointments.
+```
+1. user_id
+2. item_id
+```
+
+### 5.  ```Reviews```
+This table is used to store schedule information when doctors input their schedule.
+```
+1. review_id
+2. user_id
+3. item_id
+4. rating
+5. comment
+```
+
+### 6.  ```Transaction```
+This table is used to store departments name and their ID.
+```
+1. transaction_id
+2. user_id
+3. total_amount
+4. timestamp
+```
+
+### 7.  ```Cart```
+This table is used to store departments name and their ID.
+```
+1. transaction_id
+2. item_id
+3. quantity
+```
 
 
 
